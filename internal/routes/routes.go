@@ -16,16 +16,23 @@ func ConfigurarRotas(router *gin.Engine) {
 	// ROTAS WEB
 	web := router.Group("/")
 	{
+		web.GET("/", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "hello.html", nil)
+		})
+
 		web.GET("/cadastro", func(c *gin.Context) {
 			c.HTML(http.StatusOK, "cadastro.html", nil)
 		})
 
-		web.GET("/hello", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "feed.html", nil)
-		})
-
 		web.GET("/login", func(c *gin.Context) {
 			c.HTML(http.StatusOK, "login.html", nil)
+		})
+
+		web.GET("/feed/", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "layout", gin.H{
+				"title": "Feed de cursos",
+				"page":  "feed",
+			})
 		})
 	}
 

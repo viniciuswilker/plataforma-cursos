@@ -408,8 +408,7 @@
                 const resultado = await resposta.json();
 
                 if (resposta.ok) {
-                    alert("Cadastro realizado com sucesso!");
-                    window.location.href = "/dashboard";
+                    window.location.href = "/feed";
                 } else {
                     alert("Erro: " + (resultado.erro || "Falha ao cadastrar"));
                 }

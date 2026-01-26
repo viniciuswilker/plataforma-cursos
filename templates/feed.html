@@ -1,320 +1,277 @@
-<!DOCTYPE html>
-<html lang="pt-BR" class="light">
+{{ define "content" }}
+<style>
+    /* ===== HERO ===== */
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XXXXX</title>
+    .hero {
+        background:
+            linear-gradient(rgba(16, 25, 34, .85), rgba(16, 25, 34, .95)),
+            url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        color: #ffffff;
+        padding: 80px 0;
+        text-align: center;
+    }
 
-    <link rel="stylesheet" href="css/style.css">
+    .hero-content h1 {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
 
-    <style>
-        :root {
-            --primary: #137fec;
-            --bg-light: #f6f7f8;
-            --bg-dark: #101922;
-            --text: #0f172a;
+    .hero-content p {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+
+    /* ===== SEARCH BOX ===== */
+
+    .search-box {
+        margin: 32px auto 0;
+        max-width: 600px;
+        background: #ffffff;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .search-box span {
+        padding: 0 12px;
+        color: #64748b;
+    }
+
+    .search-box input {
+        border: none;
+        flex: 1;
+        padding: 14px;
+        font-size: 16px;
+        outline: none;
+    }
+
+    .search-box button {
+        background: #137fec;
+        color: #ffffff;
+        border: none;
+        padding: 0 24px;
+        height: 48px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .search-box button:hover {
+        background: #0f6fd1;
+    }
+
+    /* ===== MAIN ===== */
+
+    .main {
+        padding: 48px 0;
+    }
+
+    .section-header {
+        margin-bottom: 24px;
+    }
+
+    .section-header h2 {
+        font-size: 24px;
+    }
+
+    /* ===== GRID DE CURSOS ===== */
+
+    .grid-courses {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 24px;
+    }
+
+    /* ===== CARD ===== */
+
+    .course-card {
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        transition: transform .3s, box-shadow .3s;
+        cursor: pointer;
+    }
+
+    .course-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, .12);
+    }
+
+    .course-img {
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .course-body {
+        padding: 16px;
+    }
+
+    .tag {
+        font-size: 11px;
+        color: #137fec;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .course-body h3 {
+        margin: 10px 0 6px;
+        font-size: 16px;
+        line-height: 1.3;
+    }
+
+    .course-body p {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .course-footer {
+        margin-top: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .course-footer strong {
+        color: #0f172a;
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 768px) {
+
+        .hero-content h1 {
+            font-size: 32px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Lexend', sans-serif;
-        }
-
-        body {
-            background: var(--bg-light);
-            color: var(--text);
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: auto;
-            padding: 0 24px;
-        }
-
-        .navbar {
-            position: sticky;
-            top: 0;
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            z-index: 100;
-        }
-
-        .nav-content {
-            height: 64px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            font-weight: 700;
-        }
-
-        .nav-links a {
-            margin: 0 12px;
-            text-decoration: none;
-            color: #334155;
-        }
-
-        .nav-actions button {
-            margin-left: 10px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .btn-outline {
-            background: none;
-            border: 1px solid #cbd5e1;
-            padding: 10px 16px;
-            border-radius: 8px;
-        }
-
-        .hero {
-            margin-top: 32px;
-            border-radius: 16px;
-            padding: 80px 40px;
-            color: white;
-            background:
-                linear-gradient(rgba(16, 25, 34, .8), rgba(16, 25, 34, .95)),
-                url("https://images.unsplash.com/photo-1519389950473-47ba0277781c");
-            background-size: cover;
-            background-position: center;
-        }
-
-        .hero-content {
-            max-width: 700px;
-            margin: auto;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 16px;
+        .hero-content p {
+            font-size: 16px;
         }
 
         .search-box {
-            margin-top: 32px;
-            display: flex;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .search-box input,
-        .search-box select {
-            border: none;
-            padding: 14px;
-            flex: 1;
+            flex-direction: column;
         }
 
         .search-box button {
-            border: none;
+            width: 100%;
         }
 
-        .section-header {
-            margin: 48px 0 24px;
-            display: flex;
-            justify-content: space-between;
-        }
+    }
+</style>
 
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
-        }
+<section class="hero">
+    <div class="container hero-content">
+        <h1>O que você gostaria de aprender hoje?</h1>
+        <p>Descubra sua próxima habilidade em uma biblioteca com mais de 5.000 cursos ministrados por especialistas.</p>
 
-        .course-card {
-            background: white;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
-            transition: .3s;
-        }
-
-        .course-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .course-img {
-            height: 160px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .course-body {
-            padding: 16px;
-        }
-
-        .course-body button {
-            margin-top: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-        }
-
-        .cta {
-            margin: 80px 0;
-            padding: 48px;
-            background: #0f172a;
-            color: white;
-            border-radius: 16px;
-            text-align: center;
-        }
-
-        .btn-light {
-            cursor: pointer;
-            margin-top: 16px;
-            background: white;
-            color: black;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-        }
-
-        .footer {
-            margin-top: 80px;
-            padding: 48px 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 32px;
-        }
-
-        .footer a {
-            display: block;
-            color: #64748b;
-            margin-top: 8px;
-            text-decoration: none;
-        }
-    </style>
-
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-</head>
-
-<body>
-
-    <header class="navbar">
-        <div class="container nav-content">
-            <div class="logo">
-                <span class="material-symbols-outlined">school</span>
-                <h2>XXXX</h2>
-            </div>
-
-            <nav class="nav-links">
-                <a href="#">Cursos</a>
-                <a href="#">Sobre</a>
-                <a href="#">Contato</a>
-            </nav>
-
-            <div class="nav-actions">
-                <button class="btn-outline">Entrar</button>
-                <button class="btn-primary">Cadastro</button>
-            </div>
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input placeholder="Search for courses...">
+            <button>Search</button>
         </div>
-    </header>
+    </div>
+</section>
 
-    <main class="container">
+<main class="container main">
 
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Desbloqueie seu potencial com XXX</h1>
-                <p>Domine as habilidades mais requisitadas e impulsione sua carreira.</p>
+    <section class="section">
+        <div class="section-header">
+            <h2>Em alta essa semana</h2>
+        </div>
 
-                <div class="search-box">
-                    <input type="text" placeholder="O que você quer aprender?">
-                    <!-- <select>
-                        <option>Todos</option>
-                        <option>Development</option>
-                        <option>Design</option>
-                        <option>Business</option>
-                    </select> -->
-                    <button class="btn-primary">Search</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-header">
-            <h2>Cursos Populares</h2>
-            <!-- <a href="#">View all →</a> -->
-        </section>
-
-        <section class="courses-grid">
+        <div class="grid-courses">
 
             <div class="course-card">
                 <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c')"></div>
+                    style="background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085')"></div>
                 <div class="course-body">
-                    <h3>Full-Stack Web Development 2024</h3>
-                    <p>Aprenda do básico ao avançado.</p>
-                    <button>Ver curso</button>
+                    <span class="tag">Programação</span>
+                    <h3>Django Completo para Web</h3>
+                    <p>Ana Souza</p>
+                    <div class="course-footer">
+                        <span>⭐ 4.9</span>
+                        <strong>R$ 49,90</strong>
+                    </div>
                 </div>
             </div>
 
             <div class="course-card">
                 <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1551434678-e076c223a692')"></div>
+                    style="background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475')"></div>
                 <div class="course-body">
-                    <h3>UI/UX Fundamentals</h3>
-                    <p>Learn user-centered design principles.</p>
-                    <button>Ver curso</button>
+                    <span class="tag">Frontend</span>
+                    <h3>JavaScript Moderno</h3>
+                    <p>Carlos Lima</p>
+                    <div class="course-footer">
+                        <span>⭐ 4.8</span>
+                        <strong>R$ 39,90</strong>
+                    </div>
                 </div>
             </div>
 
-        </section>
+            <div class="course-card">
+                <div class="course-img"
+                    style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71')"></div>
+                <div class="course-body">
+                    <span class="tag">Data Science</span>
+                    <h3>Python para Análise de Dados</h3>
+                    <p>Mariana Rocha</p>
+                    <div class="course-footer">
+                        <span>⭐ 4.7</span>
+                        <strong>R$ 59,90</strong>
+                    </div>
+                </div>
+            </div>
 
-        <section class="cta">
-            <h2>Se torne um professor hoje</h2>
-            <p>entre na maior comunidade de cursos online.</p>
-            <button class="btn-light">Comece a ensinar</button>
-        </section>
+            <div class="course-card">
+                <div class="course-img"
+                    style="background-image:url('https://images.unsplash.com/photo-1555949963-aa79dcee981c')"></div>
+                <div class="course-body">
+                    <span class="tag">Backend</span>
+                    <h3>APIs REST com Flask</h3>
+                    <p>João Pedro</p>
+                    <div class="course-footer">
+                        <span>⭐ 4.6</span>
+                        <strong>R$ 34,90</strong>
+                    </div>
+                </div>
+            </div>
 
-    </main>
+            <div class="course-card">
+                <div class="course-img"
+                    style="background-image:url('https://images.unsplash.com/photo-1605379399642-870262d3d051')"></div>
+                <div class="course-body">
+                    <span class="tag">DevOps</span>
+                    <h3>Docker para Produção</h3>
+                    <p>Fernanda Alves</p>
+                    <div class="course-footer">
+                        <span>⭐ 4.9</span>
+                        <strong>R$ 69,90</strong>
+                    </div>
+                </div>
+            </div>
 
-    <footer class="footer">
-        <div class="container footer-grid">
-            <div>
-                <h3>EduStream</h3>
-                <p>The ultimate learning platform.</p>
+            <div class="course-card">
+                <div class="course-img"
+                    style="background-image:url('https://images.unsplash.com/photo-1551650975-87deedd944c3')"></div>
+                <div class="course-body">
+                    <span class="tag">Mobile</span>
+                    <h3>React Native do Zero</h3>
+                    <p>Lucas Martins</p>
+                    <div class="course-footer">
+                        <span>⭐ 4.8</span>
+                        <strong>R$ 54,90</strong>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h4>Platform</h4>
-                <a href="#">Courses</a>
-                <a href="#">Certification</a>
-            </div>
-            <div>
-                <h4>Support</h4>
-                <a href="#">Help Center</a>
-                <a href="#">Privacy</a>
-            </div>
-            <div>
-                <h4>Community</h4>
-                <a href="#">Blog</a>
-                <a href="#">Instructor Hub</a>
-            </div>
+
         </div>
-    </footer>
+    </section>
 
-    <script src="js/main.js"></script>
-</body>
+</main>
 
-</html>e
+{{ end }}

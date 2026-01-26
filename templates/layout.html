@@ -1,0 +1,222 @@
+{{ define "layout" }}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- <link rel="stylesheet" href="/public/css/catalog.css"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <style>
+        /* ===== RESET BASE ===== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Lexend", sans-serif;
+        }
+
+        body {
+            background: #f6f7f8;
+            color: #0f172a;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: auto;
+            padding: 0 24px;
+        }
+
+        /* ===== HEADER / NAVBAR ===== */
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            height: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* LOGO */
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .logo span {
+            color: #137fec;
+            font-size: 26px;
+        }
+
+        /* NAV LINKS */
+
+        .nav a {
+            text-decoration: none;
+            margin: 0 12px;
+            font-weight: 500;
+            color: #64748b;
+            padding-bottom: 4px;
+            transition: 0.2s;
+        }
+
+        .nav a:hover {
+            color: #137fec;
+        }
+
+        .nav a.active {
+            color: #137fec;
+            border-bottom: 2px solid #137fec;
+        }
+
+        /* PROFILE AREA */
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .icon-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #475569;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            color: #137fec;
+        }
+
+        /* ===== FOOTER ===== */
+
+        .footer {
+            background: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 80px;
+            padding: 48px 0 24px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+        }
+
+        .footer h3,
+        .footer h4 {
+            margin-bottom: 12px;
+        }
+
+        .footer p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .footer a {
+            display: block;
+            text-decoration: none;
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+
+        .footer a:hover {
+            color: #137fec;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .nome-sistema {
+            font-size: 1em;
+        }
+
+        .img-user {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <span class="material-symbols-outlined">school</span>
+                <h2 class="nome-sistema">EduStream</h2>
+            </div>
+
+            <nav class="nav">
+                <a href="/feed/" class="{{ if eq .page " home" }}active{{ end }}">Início</a>
+                <a href="#">Categorias</a>
+                <a href="/meus-cursos/">Meus cursos</a>
+            </nav>
+
+            <div class="profile">
+                <button class="icon-btn">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <img src="https://i.pravatar.cc/40" alt="profile" class="img-user">
+            </div>
+        </div>
+    </header>
+
+    {{ template "content" . }}
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <h3>EduStream</h3>
+                <p>The ultimate learning platform.</p>
+            </div>
+
+            <div>
+                <h4>Platform</h4>
+                <a href="#">Browse Courses</a>
+                <a href="#">Certification</a>
+            </div>
+
+            <div>
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+
+        <p class="copyright">
+            © 2024 EduStream Inc.
+        </p>
+    </footer>
+
+</body>
+
+</html>
+{{ end }}
