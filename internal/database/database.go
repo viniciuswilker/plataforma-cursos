@@ -13,7 +13,7 @@ var DB *gorm.DB
 func Conectar() {
 	var err error
 
-	DB, err = gorm.Open(sqlite.Open("lms.db"), &gorm.Config{})
+	DB, err = gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Falha ao conectar com o banco de dados: ", err)
