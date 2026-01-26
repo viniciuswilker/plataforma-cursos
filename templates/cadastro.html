@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Plataforma de Cursos</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --primaria: #3b82f6;
+            --primaria-escura: #2563eb;
+            --fundo: #0f172a;
+            --painel: #111c2f;
+            --borda: #1e293b;
+            --texto: #e5e7eb;
+            --texto-suave: #94a3b8;
+            --sucesso: #22c55e;
+        }
+
+        body {
+            font-family: Inter, system-ui;
+            background: linear-gradient(135deg, #020617, #0f172a);
+            color: var(--texto);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            border-bottom: 1px solid #1e293b;
+            backdrop-filter: blur(6px);
+        }
+
+        .logo {
+            font-weight: 800;
+            letter-spacing: .3px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: var(--texto-suave);
+            font-size: 14px;
+        }
+
+        .menu a:hover {
+            color: white
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primaria), var(--primaria-escura));
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px)
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+        }
+
+        .hero {
+            width: 50%;
+            padding: 80px;
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            background-image:
+                linear-gradient(135deg,
+                    rgba(2, 6, 23, 0.95) 0%,
+                    rgba(2, 6, 23, 0.85) 45%,
+                    rgba(15, 23, 42, 0.75) 100%),
+                url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop");
+
+
+            background-size: cover;
+            background-position: center;
+        }
+
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            color: var(--texto-suave);
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .area-form {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .form-box {
+            width: 100%;
+            max-width: 460px;
+            background: linear-gradient(180deg, #0b1220, #0b1220);
+            border: 1px solid var(--borda);
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, .6);
+        }
+
+        .form-box h2 {
+            font-size: 32px;
+            margin-bottom: 6px;
+        }
+
+        .subtitulo {
+            color: var(--texto-suave);
+            margin-bottom: 20px;
+        }
+
+        .aviso {
+            background: rgba(34, 197, 94, .12);
+            border: 1px solid rgba(34, 197, 94, .4);
+            color: #bbf7d0;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .campo {
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--texto-suave);
+        }
+
+        .input-wrapper {
+            margin-top: 6px;
+            position: relative;
+        }
+
+        .input-wrapper span {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            color: var(--texto-suave);
+        }
+
+        input {
+            width: 100%;
+            height: 46px;
+            padding-left: 42px;
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            transition: .2s;
+        }
+
+        input:focus {
+            border-color: var(--primaria);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, .25);
+        }
+
+        .termos {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--texto-suave);
+            margin: 16px 0;
+        }
+
+        .btn-principal {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primaria), var(--primaria-escura));
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .25s;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, .4);
+        }
+
+        .btn-principal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, .55);
+        }
+
+        .social {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn-social {
+            height: 44px;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+            background: #020617;
+            color: white;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-social:hover {
+            border-color: var(--primaria);
+        }
+
+        .rodape {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--texto-suave);
+        }
+
+        .rodape a {
+            color: var(--primaria);
+            text-decoration: none;
+        }
+
+        @media(max-width:900px) {
+            .hero {
+                display: none
+            }
+
+            .area-form {
+                width: 100%
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">🎓 EduLearn</div>
+        <nav class="menu">
+            <a href="#">Cursos</a>
+            <a href="#">Instrutores</a>
+            <a href="#">Planos</a>
+            <button class="btn-login">Entrar</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div>
+                <h1>Aprenda no seu ritmo</h1>
+                <p>Plataforma completa de cursos online com acompanhamento de progresso, certificados automáticos e
+                    trilhas personalizadas.</p>
+            </div>
+        </section>
+
+        <section class="area-form">
+            <div class="form-box">
+
+                <h2>Criar conta</h2>
+                <div class="subtitulo">Comece sua jornada hoje</div>
+
+                <div class="aviso">
+                    <span class="material-symbols-outlined">verified</span>
+                    20% de desconto no primeiro curso premium
+                </div>
+
+                <form id="cadastro">
+
+                    <div class="campo">
+                        <label for="nome">Nome</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined">person</span>
+                            <input id="nome" required>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="sobrenome">Sobrenome</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined">person</span>
+                            <input id="sobrenome" required>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="email">Email</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined">mail</span>
+                            <input type="email" id="email" required>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="senha">Senha</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined">lock</span>
+                            <input type="password" id="senha" required>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="confirmar_senha">Confirmar senha</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined">lock</span>
+                            <input type="password" id="confirmar_senha" required>
+                        </div>
+                    </div>
+
+                    <div class="termos">
+                        <input type="checkbox" id="termos" required>
+                        <label for="termos">Aceito os termos de uso</label>
+                    </div>
+
+                    <button type="submit" class="btn-principal" id="btn-enviar">
+                        Criar conta
+                    </button>
+
+                    <div class="social">
+                        <button type="button" class="btn-social">Google</button>
+                        <button type="button" class="btn-social">Microsoft</button>
+                    </div>
+
+                    <div class="rodape">
+                        Já possui conta? <a href="#">Entrar</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById("cadastro").addEventListener("submit", e => {
+            e.preventDefault()
+            alert("Cadastro enviado!")
+        })
+    </script>
+
+</body>
+
+</html>
