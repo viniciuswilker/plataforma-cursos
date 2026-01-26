@@ -14,6 +14,11 @@ type RequisicaoCadastro struct {
 	Senha     string `json:"senha" binding:"required,min=6"`
 }
 
+type RequisicaoLogin struct {
+	Email string `json:"email" binding:"required"`
+	Senha string `json:"senha" binding:"required"`
+}
+
 func Cadastrar(c *gin.Context) {
 
 	var req RequisicaoCadastro
@@ -30,4 +35,20 @@ func Cadastrar(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"mensagem": "Usuário criado com sucesso!"})
+}
+
+func Login(c *gin.Context) {
+	var req RequisicaoLogin
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"erro": "Dados inválidos"})
+		return
+	}
+
+	token, err := services.Login(req.Email, req.Senha)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"erro": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
