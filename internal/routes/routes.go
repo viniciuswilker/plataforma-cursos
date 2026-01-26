@@ -9,22 +9,27 @@ import (
 )
 
 func ConfigurarRotas(router *gin.Engine) {
-	// Configuração de templates e arquivos estáticos
+
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
 
-	// --- ROTAS WEB (Renderização de HTML) ---
+	// ROTAS WEB
 	web := router.Group("/")
 	{
 		web.GET("/cadastro", func(c *gin.Context) {
 			c.HTML(http.StatusOK, "cadastro.html", nil)
 		})
+
+		web.GET("/hello", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "feed.html", nil)
+		})
+
 		web.GET("/login", func(c *gin.Context) {
 			c.HTML(http.StatusOK, "login.html", nil)
 		})
 	}
 
-	// --- ROTAS DE API (JSON) ---
+	// ROTAS DE API
 
 	// Autenticação
 	auth := router.Group("/auth")

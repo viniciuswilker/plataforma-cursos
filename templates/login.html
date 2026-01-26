@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Plataforma de Cursos</title>
+    <title>Login - Plataforma de Cursos</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
@@ -99,7 +99,8 @@
                     rgba(2, 6, 23, 0.95) 0%,
                     rgba(2, 6, 23, 0.85) 45%,
                     rgba(15, 23, 42, 0.75) 100%),
-                url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop");
+                url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600&auto=format&fit=crop");
+
 
 
             background-size: cover;
@@ -328,7 +329,7 @@
     <main>
         <section class="hero">
             <div>
-                <h1>Aprenda no seu ritmo</h1>
+                <h1>Bem vindo de volta!</h1>
                 <p>Plataforma completa de cursos online com acompanhamento de progresso, certificados automáticos e
                     trilhas personalizadas.</p>
             </div>
@@ -337,31 +338,13 @@
         <section class="area-form">
             <div class="form-box">
 
-                <h2>Criar conta</h2>
-                <div class="subtitulo">Comece sua jornada hoje</div>
+                <h2>Entre com a sua conta</h2>
+                <div class="subtitulo">Faça login com email e senha para acessar seus cursos</div>
 
-                <div class="aviso">
-                    <span class="material-symbols-outlined">verified</span>
-                    20% de desconto no primeiro curso premium
-                </div>
 
-                <form id="cadastro">
 
-                    <div class="campo">
-                        <label for="nome">Nome</label>
-                        <div class="input-wrapper">
-                            <span class="material-symbols-outlined">person</span>
-                            <input id="nome" required>
-                        </div>
-                    </div>
+                <form id="login">
 
-                    <div class="campo">
-                        <label for="sobrenome">Sobrenome</label>
-                        <div class="input-wrapper">
-                            <span class="material-symbols-outlined">person</span>
-                            <input id="sobrenome" required>
-                        </div>
-                    </div>
 
                     <div class="campo">
                         <label for="email">Email</label>
@@ -379,39 +362,10 @@
                         </div>
                     </div>
 
-                    <div class="campo">
-                        <label for="confirmar_senha">Confirmar senha</label>
-                        <div class="input-wrapper">
-                            <span class="material-symbols-outlined">lock</span>
-                            <input type="password" id="confirmar_senha" required>
-                        </div>
-                    </div>
 
-                    <!-- <div class="termos">
-                        <input type="checkbox" id="termos" required>
-                        <label for="termos">Aceito os termos de uso</label>
-                    </div> -->
-
-                    <div class="campo">
-                        <label>Tipo de conta</label>
-
-                        <div class="grupo-opcoes">
-
-                            <label class="opcao-conta">
-                                <input type="radio" name="tipo_conta" value="aluno" checked>
-                                <span>Sou estudante</span>
-                            </label>
-
-                            <label class="opcao-conta">
-                                <input type="radio" name="tipo_conta" value="instrutor">
-                                <span>Sou instrutor</span>
-                            </label>
-
-                        </div>
-                    </div>
 
                     <button type="submit" class="btn-principal" id="btn-enviar">
-                        Criar conta
+                        Entrar
                     </button>
 
                     <div class="social">
@@ -420,7 +374,7 @@
                     </div>
 
                     <div class="rodape">
-                        Já possui conta? <a href="#">Entrar</a>
+                        Não possui conta? <a href="#">Cadastra-se</a>
                     </div>
 
                 </form>
@@ -430,28 +384,20 @@
     </main>
 
     <script>
-        document.getElementById("cadastro").addEventListener("submit", async (e) => {
+        document.getElementById("login").addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const btn = document.getElementById("btn-enviar");
             btn.disabled = true;
             btn.innerText = "Carregando...";
 
-            const nomeCompleto = document.getElementById("nome").value + " " + document.getElementById("sobrenome").value;
-
-            const nome = document.getElementById("nome").value
-            const sobrenome = document.getElementById("sobrenome").value
-
             const dados = {
-                nome: document.getElementById("nome").value,
-                sobrenome: document.getElementById("sobrenome").value,
                 email: document.getElementById("email").value,
                 senha: document.getElementById("senha").value,
-                cargo: document.querySelector('input[name="tipo_conta"]:checked')?.value || "aluno"
             };
 
             try {
-                const resposta = await fetch("/auth/cadastro", {
+                const resposta = await fetch("/auth/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -463,7 +409,7 @@
 
                 if (resposta.ok) {
                     alert("Cadastro realizado com sucesso!");
-                    window.location.href = "/login";
+                    window.location.href = "/dashboard";
                 } else {
                     alert("Erro: " + (resultado.erro || "Falha ao cadastrar"));
                 }

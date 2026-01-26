@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XXXXX</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        :root {
+            --primary: #137fec;
+            --bg-light: #f6f7f8;
+            --bg-dark: #101922;
+            --text: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: auto;
+            padding: 0 24px;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            z-index: 100;
+        }
+
+        .nav-content {
+            height: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .nav-links a {
+            margin: 0 12px;
+            text-decoration: none;
+            color: #334155;
+        }
+
+        .nav-actions button {
+            margin-left: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: none;
+            border: 1px solid #cbd5e1;
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .hero {
+            margin-top: 32px;
+            border-radius: 16px;
+            padding: 80px 40px;
+            color: white;
+            background:
+                linear-gradient(rgba(16, 25, 34, .8), rgba(16, 25, 34, .95)),
+                url("https://images.unsplash.com/photo-1519389950473-47ba0277781c");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content {
+            max-width: 700px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .search-box {
+            margin-top: 32px;
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .search-box input,
+        .search-box select {
+            border: none;
+            padding: 14px;
+            flex: 1;
+        }
+
+        .search-box button {
+            border: none;
+        }
+
+        .section-header {
+            margin: 48px 0 24px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
+            transition: .3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .course-img {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .course-body {
+            padding: 16px;
+        }
+
+        .course-body button {
+            margin-top: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .cta {
+            margin: 80px 0;
+            padding: 48px;
+            background: #0f172a;
+            color: white;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .btn-light {
+            cursor: pointer;
+            margin-top: 16px;
+            background: white;
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding: 48px 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 32px;
+        }
+
+        .footer a {
+            display: block;
+            color: #64748b;
+            margin-top: 8px;
+            text-decoration: none;
+        }
+    </style>
+
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <span class="material-symbols-outlined">school</span>
+                <h2>XXXX</h2>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#">Cursos</a>
+                <a href="#">Sobre</a>
+                <a href="#">Contato</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="btn-outline">Entrar</button>
+                <button class="btn-primary">Cadastro</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Desbloqueie seu potencial com XXX</h1>
+                <p>Domine as habilidades mais requisitadas e impulsione sua carreira.</p>
+
+                <div class="search-box">
+                    <input type="text" placeholder="O que você quer aprender?">
+                    <!-- <select>
+                        <option>Todos</option>
+                        <option>Development</option>
+                        <option>Design</option>
+                        <option>Business</option>
+                    </select> -->
+                    <button class="btn-primary">Search</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <h2>Cursos Populares</h2>
+            <!-- <a href="#">View all →</a> -->
+        </section>
+
+        <section class="courses-grid">
+
+            <div class="course-card">
+                <div class="course-img"
+                    style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c')"></div>
+                <div class="course-body">
+                    <h3>Full-Stack Web Development 2024</h3>
+                    <p>Aprenda do básico ao avançado.</p>
+                    <button>Ver curso</button>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <div class="course-img"
+                    style="background-image:url('https://images.unsplash.com/photo-1551434678-e076c223a692')"></div>
+                <div class="course-body">
+                    <h3>UI/UX Fundamentals</h3>
+                    <p>Learn user-centered design principles.</p>
+                    <button>Ver curso</button>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="cta">
+            <h2>Se torne um professor hoje</h2>
+            <p>entre na maior comunidade de cursos online.</p>
+            <button class="btn-light">Comece a ensinar</button>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <h3>EduStream</h3>
+                <p>The ultimate learning platform.</p>
+            </div>
+            <div>
+                <h4>Platform</h4>
+                <a href="#">Courses</a>
+                <a href="#">Certification</a>
+            </div>
+            <div>
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Privacy</a>
+            </div>
+            <div>
+                <h4>Community</h4>
+                <a href="#">Blog</a>
+                <a href="#">Instructor Hub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>e
