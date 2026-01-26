@@ -8,24 +8,27 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CadastrarUsuario(nome, sobrenome, email, senha string) error {
+func CadastrarUsuario(nome, sobrenome, email, senha, cargo string) error {
+	usuarioExistente, err := repositorios.BuscarPorEmail(email)
 
-	_, err := repositorios.BuscarPorEmail(email)
-	if err != nil {
-		return errors.New("este e-mail já esta cadastrado")
+	if err == nil && usuarioExistente.ID != 0 {
+		return errors.New("este e-mail já está cadastrado")
 	}
 
-	senhaHash, _ := bcrypt.GenerateFromPassword([]byte(senha), bcrypt.DefaultCost)
+	senhaHash, err := bcrypt.GenerateFromPassword([]byte(senha), bcrypt.DefaultCost)
+	if err != nil {
+		return errors.New("erro ao processar senha")
+	}
+
 	novoUsuario := models.Usuario{
 		Nome:      nome,
 		Sobrenome: sobrenome,
 		Email:     email,
 		Senha:     string(senhaHash),
-		Cargo:     "aluno",
+		Cargo:     cargo,
 	}
 
 	return repositorios.CriarUsuario(&novoUsuario)
-
 }
 
 func Login(email, senha string) (string, error) {

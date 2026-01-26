@@ -368,10 +368,51 @@
     </main>
 
     <script>
-        document.getElementById("cadastro").addEventListener("submit", e => {
-            e.preventDefault()
-            alert("Cadastro enviado!")
-        })
+        document.getElementById("cadastro").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById("btn-enviar");
+            btn.disabled = true;
+            btn.innerText = "Carregando...";
+
+            const nomeCompleto = document.getElementById("nome").value + " " + document.getElementById("sobrenome").value;
+
+            const nome = document.getElementById("nome").value
+            const sobrenome = document.getElementById("sobrenome").value
+
+            const dados = {
+                nome: document.getElementById("nome").value,
+                sobrenome: document.getElementById("sobrenome").value,
+                email: document.getElementById("email").value,
+                senha: document.getElementById("senha").value,
+                cargo: document.querySelector('input[name="role"]:checked')?.value || "aluno"
+            };
+
+            try {
+                const resposta = await fetch("/auth/cadastro", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await resposta.json();
+
+                if (resposta.ok) {
+                    alert("Cadastro realizado com sucesso!");
+                    window.location.href = "/login";
+                } else {
+                    alert("Erro: " + (resultado.erro || "Falha ao cadastrar"));
+                }
+            } catch (erro) {
+                console.error("Erro na requisição:", erro);
+                alert("Não foi possível conectar ao servidor.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Criar conta";
+            }
+        });
     </script>
 
 </body>

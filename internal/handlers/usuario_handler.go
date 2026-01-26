@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,7 @@ type RequisicaoCadastro struct {
 	Sobrenome string `json:"sobrenome" binding:"required"`
 	Email     string `json:"email" binding:"required,email"`
 	Senha     string `json:"senha" binding:"required,min=6"`
+	Cargo     string `json:"cargo" binding:"required"`
 }
 
 type RequisicaoLogin struct {
@@ -23,11 +25,12 @@ func Cadastrar(c *gin.Context) {
 
 	var req RequisicaoCadastro
 	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println("Erro de Bind:", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"erro": "Dados inválidos"})
 		return
 	}
 
-	err := services.CadastrarUsuario(req.Nome, req.Sobrenome, req.Email, req.Senha)
+	err := services.CadastrarUsuario(req.Nome, req.Sobrenome, req.Email, req.Senha, req.Cargo)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"erro": err.Error()})
