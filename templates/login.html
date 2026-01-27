@@ -408,7 +408,9 @@
                 const resultado = await resposta.json();
 
                 if (resposta.ok) {
-                    window.location.href = "/feed";
+                    alert("LOGIN EFETUADO");
+                    window.location.href = "/feed/";
+
                 } else {
                     alert("Erro: " + (resultado.erro || "Falha ao cadastrar"));
                 }

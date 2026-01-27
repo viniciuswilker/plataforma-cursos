@@ -52,6 +52,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"erro": err.Error()})
 		return
 	}
+	c.SetCookie("token", token, 3600*24, "/", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
