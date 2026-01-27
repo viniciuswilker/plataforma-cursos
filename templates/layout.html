@@ -170,6 +170,10 @@
                 <a href="/feed/" class="{{ if eq .page " home" }}active{{ end }}">Início</a>
                 <a href="#">Categorias</a>
                 <a href="/meus-cursos/">Meus cursos</a>
+
+                {{ if or (eq .usuario.Cargo "instrutor") (eq .usuario.Cargo "admin") }}
+                <a href="/professor/dashboard" class="btn-destaque">Página do Professor</a>
+                {{ end }}
             </nav>
 
             <div class="profile">
@@ -186,25 +190,25 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div>
-                <h3>EduStream</h3>
-                <p>The ultimate learning platform.</p>
+                <h3>xxxx</h3>
+                <p>A maior plataforma de ensino do brasil.</p>
             </div>
 
             <div>
-                <h4>Platform</h4>
-                <a href="#">Browse Courses</a>
-                <a href="#">Certification</a>
+                <h4>Platforma</h4>
+                <a href="#">Procurar cursos</a>
+                <a href="#">Certificados</a>
             </div>
 
             <div>
-                <h4>Support</h4>
-                <a href="#">Help Center</a>
-                <a href="#">Privacy</a>
+                <h4>Suporte</h4>
+                <a href="#">Ajuda</a>
+                <a href="#">Privacidade</a>
             </div>
         </div>
 
         <p class="copyright">
-            © 2024 EduStream Inc.
+            © 2026 Vinicius Wilker
         </p>
     </footer>
 

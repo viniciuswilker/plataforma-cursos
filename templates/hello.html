@@ -205,6 +205,10 @@
             margin-top: 8px;
             text-decoration: none;
         }
+
+        .btn-nav {
+            cursor: pointer;
+        }
     </style>
 
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -227,8 +231,8 @@
             </nav>
 
             <div class="nav-actions">
-                <button class="btn-outline">Entrar</button>
-                <button class="btn-primary">Cadastro</button>
+                <button class="btn-outline btn-nav" onclick="window.location.href='/login'">Entrar</button>
+                <button class="btn-primary btn-nav" onclick="window.location.href='/cadastro'">Cadastro</button>
             </div>
         </div>
     </header>
