@@ -56,3 +56,9 @@ func Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
+
+func Logout(c *gin.Context) {
+	c.SetCookie("token", "", -1, "/", "", false, true)
+
+	c.Redirect(http.StatusSeeOther, "/login")
+}

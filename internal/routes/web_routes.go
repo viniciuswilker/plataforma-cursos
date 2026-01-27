@@ -12,6 +12,8 @@ func RegistrarRotasWeb(router *gin.Engine) {
 		web.GET("/cadastro", handlers.ExibirCadastro)
 		web.GET("/login", handlers.ExibirLogin)
 		web.GET("", handlers.ExibirHome)
+		web.GET("/logout", handlers.Logout)
+
 	}
 
 	privado := router.Group("/")
