@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,8 +27,7 @@ func ExibirFeed(c *gin.Context) {
 
 	id, existe := c.Get("usuarioID")
 	if !existe {
-		fmt.Println("NAO ACHOU O ID")
-		// c.Redirect(http.StatusSeeOther, "/login")
+		c.Redirect(http.StatusSeeOther, "/login")
 		return
 	}
 
@@ -42,6 +40,27 @@ func ExibirFeed(c *gin.Context) {
 	c.HTML(http.StatusOK, "layout", gin.H{
 		"title":   "Feed de cursos",
 		"page":    "feed",
+		"usuario": usuario,
+	})
+}
+
+func PaginaProfessor(c *gin.Context) {
+
+	id, existe := c.Get("usuarioID")
+	if !existe {
+		c.Redirect(http.StatusSeeOther, "/login")
+		return
+	}
+
+	usuario, err := repositorios.BuscarPorID(id)
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/login")
+		return
+	}
+
+	c.HTML(http.StatusOK, "layout", gin.H{
+		"title":   "Pagina do professor",
+		"page":    "professor",
 		"usuario": usuario,
 	})
 }

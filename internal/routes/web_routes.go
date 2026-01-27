@@ -11,8 +11,8 @@ func RegistrarRotasWeb(router *gin.Engine) {
 	{
 		web.GET("/cadastro", handlers.ExibirCadastro)
 		web.GET("/login", handlers.ExibirLogin)
-		web.GET("", handlers.ExibirHome)
 		web.GET("/logout", handlers.Logout)
+		web.GET("", handlers.ExibirHome)
 
 	}
 
@@ -20,5 +20,6 @@ func RegistrarRotasWeb(router *gin.Engine) {
 	privado.Use(middlewares.Autorizar("aluno", "instrutor", "admin"))
 	{
 		privado.GET("/feed/", handlers.ExibirFeed)
+		privado.GET("/professor/cursos/", handlers.PaginaProfessor)
 	}
 }
