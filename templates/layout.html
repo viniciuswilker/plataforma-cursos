@@ -185,7 +185,16 @@
         </div>
     </header>
 
-    {{ template "content" . }}
+
+
+    {{ if eq .page "feed" }}
+    {{ template "feed_content" . }}
+    {{ else if eq .page "professor" }}
+    {{ template "professor_content" . }}
+    {{ else }}
+    <p>Página não encontrada ou bloco não definido.</p>
+    {{ end }}
+
 
     <footer class="footer">
         <div class="container footer-grid">
