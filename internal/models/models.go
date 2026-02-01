@@ -19,6 +19,7 @@ type Curso struct {
 	InstrutorID uint
 	Instrutor   Usuario  `gorm:"foreignKey:InstrutorID"`
 	Modulos     []Modulo `gorm:"constraint:OnDelete:CASCADE;"`
+	TotalAlunos int64    `gorm:"column:total_alunos"`
 }
 
 type Modulo struct {

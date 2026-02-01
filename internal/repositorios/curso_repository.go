@@ -18,7 +18,13 @@ func ListarCursos() ([]models.Curso, error) {
 func ListarCursosPorInstrutor(instrutorID uint) ([]models.Curso, error) {
 	var cursos []models.Curso
 
-	err := database.DB.Where("instrutor_id = ?", instrutorID).Find(&cursos).Error
+	err := database.DB.Table("cursos").
+		Select("cursos.*, COUNT(matriculas.id) AS total_alunos").
+		Joins("LEFT JOIN matriculas ON matriculas.curso_id = cursos.id").
+		Where("cursos.instrutor_id = ? AND cursos.deleted_at IS NULL", instrutorID).
+		Group("cursos.id").
+		Scan(&cursos).Error
+
 	return cursos, err
 }
 

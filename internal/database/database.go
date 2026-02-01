@@ -25,6 +25,8 @@ func Conectar() {
 		&models.Curso{},
 		&models.Aula{},
 		&models.ProgressoAula{},
+		&models.Material{},
+		&models.Matricula{},
 	)
 
 }

@@ -298,45 +298,31 @@
 
 <section class="container courses-grid">
 
+    {{ range .cursos }}
     <div class="course-card">
         <div class="course-thumb"
-            style="background-image:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f')">
+            style="background-image:url('{{ if .CapaURL }}{{ .CapaURL }}{{ else }}https://images.unsplash.com/photo-1522202176988-66273c2fd55f{{ end }}')">
             <div class="badge">Publicado</div>
         </div>
 
         <div class="course-content">
-            <h3>Design de Interfaces Avançado com React</h3>
+            <h3>{{ .Titulo }}</h3>
 
             <div class="course-info">
-                <span>👤 450 alunos</span>
-                <span>⭐ 4.8</span>
+                <span>👤 0 alunos</span> <span>⭐ 5.0</span>
             </div>
 
             <div class="course-footer">
-                <button>Editar Curso</button>
+                <button onclick="window.location.href='/professor/cursos/editar/{{ .ID }}'">Editar Curso</button>
             </div>
         </div>
     </div>
-
-    <div class="course-card">
-        <div class="course-thumb"
-            style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71')">
-            <div class="badge">Rascunho</div>
-        </div>
-
-        <div class="course-content">
-            <h3>Introdução ao Python para Dados</h3>
-
-            <div class="course-info">
-                <span>👤 210 alunos</span>
-                <span>⭐ 4.6</span>
-            </div>
-
-            <div class="course-footer">
-                <button>Editar Curso</button>
-            </div>
-        </div>
+    {{ else }}
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">
+        <p>Você ainda não criou nenhum curso.</p>
     </div>
+    {{ end }}
+
 
     <div class="add-card" id="add-curso">
         <span class="material-symbols-outlined">add_circle</span>
