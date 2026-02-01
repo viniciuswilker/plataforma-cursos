@@ -17,18 +17,34 @@ type Curso struct {
 	Descricao   string `gorm:"type:text"`
 	CapaURL     string
 	InstrutorID uint
-	Instrutor   Usuario `gorm:"foreignKey:InstrutorID"`
-	Aulas       []Aula  `gorm:"constraint:OnDelete:CASCADE;"`
+	Instrutor   Usuario  `gorm:"foreignKey:InstrutorID"`
+	Modulos     []Modulo `gorm:"constraint:OnDelete:CASCADE;"`
+}
+
+type Modulo struct {
+	gorm.Model
+	CursoID uint
+	Titulo  string `gorm:"size:200;not null"`
+	Ordem   int
+	Aulas   []Aula `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 type Aula struct {
 	gorm.Model
-	CursoID  uint
-	Titulo   string `gorm:"size:200;not null"`
-	Conteudo string `gorm:"type:text"`
-	Ordem    int
+	ModuloID  uint
+	Titulo    string `gorm:"size:200;not null"`
+	VideoURL  string
+	Conteudo  string `gorm:"type:text"`
+	Ordem     int
+	Materiais []Material `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
+type Material struct {
+	gorm.Model
+	AulaID     uint
+	Nome       string
+	ArquivoURL string
+}
 type Matricula struct {
 	gorm.Model
 	UsuarioID uint
