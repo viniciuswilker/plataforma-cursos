@@ -45,6 +45,7 @@ type Material struct {
 	Nome       string
 	ArquivoURL string
 }
+
 type Matricula struct {
 	gorm.Model
 	UsuarioID uint

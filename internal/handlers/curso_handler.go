@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/viniciuswilker/plataforma-cursos/internal/database"
+	"github.com/viniciuswilker/plataforma-cursos/internal/models"
 	"github.com/viniciuswilker/plataforma-cursos/internal/services"
 )
 
@@ -13,21 +15,43 @@ type RequisicaoCurso struct {
 }
 
 func CriarCurso(c *gin.Context) {
-	var req RequisicaoCurso
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"erro": err.Error()})
+
+	idInterface, _ := c.Get("usuarioID")
+
+	var instrutorID uint
+	if val, ok := idInterface.(float64); ok {
+		instrutorID = uint(val)
+	} else if val, ok := idInterface.(uint); ok {
+		instrutorID = val
+	}
+
+	var input struct {
+		Titulo    string `json:"titulo" binding:"required"`
+		Descricao string `json:"descricao"`
+		CapaURL   string `json:"capa_url"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Título é obrigatório"})
 		return
 	}
 
-	idUsuario := c.MustGet("usuarioID").(float64)
+	curso := models.Curso{
+		Titulo:      input.Titulo,
+		Descricao:   input.Descricao,
+		CapaURL:     input.CapaURL,
+		InstrutorID: instrutorID,
+	}
 
-	err := services.CriarNovoCurso(req.Titulo, req.Descricao, uint(idUsuario))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"erro": "Erro ao criar curso"})
+	if err := database.DB.Create(&curso).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao salvar no banco"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"mensagem": "Curso criado com sucesso!"})
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Curso criado com sucesso",
+		"id":      curso.ID,
+	})
 }
 
 func ListarCursos(c *gin.Context) {

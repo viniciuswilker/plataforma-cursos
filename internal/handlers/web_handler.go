@@ -59,10 +59,17 @@ func ExibirFeed(c *gin.Context) {
 
 func PaginaProfessor(c *gin.Context) {
 
-	id, existe := c.Get("usuarioID")
+	idRaw, existe := c.Get("usuarioID")
 	if !existe {
 		c.Redirect(http.StatusSeeOther, "/login")
 		return
+	}
+
+	var id uint
+	if val, ok := idRaw.(float64); ok {
+		id = uint(val)
+	} else {
+		id = idRaw.(uint)
 	}
 
 	usuario, err := repositorios.BuscarPorID(id)
@@ -71,9 +78,12 @@ func PaginaProfessor(c *gin.Context) {
 		return
 	}
 
+	cursos, _ := repositorios.ListarCursosPorInstrutor(id)
+
 	c.HTML(http.StatusOK, "layout", gin.H{
 		"title":   "Pagina do professor",
 		"page":    "professor",
 		"usuario": usuario,
+		"cursos":  cursos,
 	})
 }

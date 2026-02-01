@@ -15,6 +15,13 @@ func ListarCursos() ([]models.Curso, error) {
 	return cursos, err
 }
 
+func ListarCursosPorInstrutor(instrutorID uint) ([]models.Curso, error) {
+	var cursos []models.Curso
+
+	err := database.DB.Where("instrutor_id = ?", instrutorID).Find(&cursos).Error
+	return cursos, err
+}
+
 func CriarAula(aula *models.Aula) error {
 	return database.DB.Create(aula).Error
 }

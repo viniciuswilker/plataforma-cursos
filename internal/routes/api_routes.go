@@ -15,6 +15,13 @@ func RegistrarRotasAPI(router *gin.Engine) {
 
 	api := router.Group("/api")
 	api.Use(middlewares.Autorizar("aluno", "instrutor", "admin"))
+
+	professor := api.Group("/professor")
+	professor.Use(middlewares.Autorizar("instrutor", "admin"))
+	{
+		professor.POST("/cursos/criar", handlers.CriarCurso)
+	}
+
 	{
 		api.GET("/cursos", handlers.ListarCursos)
 

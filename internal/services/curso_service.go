@@ -19,9 +19,9 @@ func BuscarTodosCursos() ([]models.Curso, error) {
 	return repositorios.ListarCursos()
 }
 
-func AdicionarAula(cursoID uint, titulo, conteudo string, ordem int) error {
+func AdicionarAula(moduloID uint, titulo, conteudo string, ordem int) error {
 	aula := models.Aula{
-		CursoID:  cursoID,
+		ModuloID: moduloID,
 		Titulo:   titulo,
 		Conteudo: conteudo,
 		Ordem:    ordem,
