@@ -1,0 +1,10 @@
+services:
+  plataforma:
+    build: .
+    container_name: plataforma_cursos_app
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dados_db:/app/dados_db
+      - ./uploads:/app/uploads
+    restart: always

@@ -1,0 +1,28 @@
+# Estágio de Build
+FROM golang:1.24-bookworm AS builder
+
+RUN apt-get update && apt-get install -y gcc musl-dev
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/main.go
+
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/main .
+COPY --from=builder /app/templates ./templates
+COPY --from=builder /app/static ./static
+COPY --from=builder /app/uploads ./uploads
+
+EXPOSE 8080
+
+CMD ["./main"]

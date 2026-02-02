@@ -2,6 +2,7 @@ package database
 
 import (
 	"log"
+	"os"
 
 	"github.com/glebarez/sqlite"
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
@@ -13,11 +14,15 @@ var DB *gorm.DB
 func Conectar() {
 	var err error
 
-	DB, err = gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
+	dbPath := os.Getenv("DATABASE_URL")
+	if dbPath == "" {
+		dbPath = "database.db"
+	}
+
+	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Falha ao conectar com o banco de dados: ", err)
-
 	}
 
 	DB.AutoMigrate(
@@ -28,5 +33,4 @@ func Conectar() {
 		&models.Material{},
 		&models.Matricula{},
 	)
-
 }
