@@ -10,9 +10,12 @@ RUN go mod download
 
 COPY . .
 
+RUN ls -la /app
+
 RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/api/main.go
 
 FROM debian:bookworm-slim
+
 
 WORKDIR /app
 
