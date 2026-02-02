@@ -25,6 +25,7 @@ func RegistrarRotasWeb(router *gin.Engine) {
 		{
 			professor.GET("/", handlers.PaginaProfessor)
 			professor.GET("/editar/:id", handlers.ExibirEdicaoCurso)
+			professor.GET("/:id/assistir", handlers.AssistirCursoAdm)
 		}
 	}
 }

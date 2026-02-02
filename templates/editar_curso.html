@@ -232,8 +232,10 @@
                     <span class="material-symbols-outlined" style="color: #cbd5e1; cursor: grab;">drag_indicator</span>
                     <input type="text" class="module-title-input" value="{{ .Titulo }}"
                         onchange="salvarModulo('{{ .ID }}', this.value)">
-                    <button class="btn-icon" style="background:none; border:none; color: #ef4444; cursor:pointer;"><span
-                            class="material-symbols-outlined">delete</span></button>
+                    <button class="btn-icon" onclick="excluirModulo('{{ .ID }}')"
+                        style="background:none; border:none; color: #ef4444; cursor:pointer;">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
                 </div>
 
                 <div class="lessons-container">
@@ -362,5 +364,34 @@
         if (res.ok) window.location.reload();
         else alert("Erro ao criar aula");
     });
+</script>
+
+<script>
+    async function excluirModulo(moduloID) {
+        if (!confirm("Tem certeza que deseja excluir este módulo e TODAS as aulas dentro dele? Esta ação não pode ser desfeita.")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/professor/modulos/${moduloID}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                const data = await response.json();
+                alert(data.error || "Erro ao excluir módulo");
+            }
+        } catch (error) {
+            console.error("Erro:", error);
+            alert("Erro de conexão com o servidor");
+        }
+
+
+    }
 </script>
 {{ end }}

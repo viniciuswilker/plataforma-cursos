@@ -1,0 +1,275 @@
+{{ define "ver_curso_adm" }}
+<style>
+    .player-container {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        height: calc(100vh - 64px);
+        background: #0f172a;
+    }
+
+    .video-main {
+        padding: 40px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .video-wrapper {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border: 1px solid #1e293b;
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        outline: none;
+    }
+
+    .video-info h2 {
+        color: #f8fafc;
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .video-info p {
+        color: #94a3b8;
+        margin-top: 8px;
+        font-size: 16px;
+    }
+
+    .materials-section {
+        border-top: 1px solid #1e293b;
+        padding-top: 32px;
+    }
+
+    .materials-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #f8fafc;
+        margin-bottom: 20px;
+    }
+
+    .materials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+    }
+
+    .material-card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: #f1f5f9;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .material-card:hover {
+        background: #334155;
+        border-color: #137fec;
+        transform: translateY(-2px);
+    }
+
+    .material-icon-box {
+        width: 48px;
+        height: 48px;
+        background: rgba(19, 127, 236, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #137fec;
+    }
+
+    .material-details strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    .material-details span {
+        font-size: 12px;
+        color: #94a3b8;
+    }
+
+    .course-sidebar {
+        background: #ffffff;
+        border-left: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .sidebar-header h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    .module-group {
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .module-name {
+        padding: 12px 24px;
+        background: #f8fafc;
+        font-weight: 700;
+        font-size: 12px;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .lesson-item {
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 4px solid transparent;
+        color: #475569;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .lesson-item:hover {
+        background: #f1f5f9;
+        color: #137fec;
+    }
+
+    .lesson-item.active {
+        background: #eff6ff;
+        color: #137fec;
+        border-left-color: #137fec;
+        font-weight: 600;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="player-container">
+    <main class="video-main">
+        <div class="video-wrapper">
+            {{ if .aulaAtual.VideoURL }}
+            <video id="main-video" controls src="/{{ .aulaAtual.VideoURL }}" controlsList="nodownload"></video>
+            {{ else }}
+            <div
+                style="height: 100%; display: flex; flex-direction:column; align-items: center; justify-content: center; color: #64748b; gap: 16px;">
+                <span class="material-symbols-outlined" style="font-size: 48px;">videocam_off</span>
+                <p>Esta aula ainda não possui vídeo disponível.</p>
+            </div>
+            {{ end }}
+        </div>
+
+        <div class="video-info">
+            <h2 id="aula-titulo-display">{{ .aulaAtual.Titulo }}</h2>
+            <p>Curso: {{ .curso.Titulo }} • <span style="color: #137fec;">Modo Instrutor</span></p>
+        </div>
+
+        <div class="materials-section">
+            <div class="materials-header">
+                <span class="material-symbols-outlined">attachment</span>
+                <h3>Materiais de Apoio</h3>
+            </div>
+
+            <div class="materials-grid" id="container-materiais">
+                {{ range .aulaAtual.Materiais }}
+                <a href="/{{ .ArquivoURL }}" target="_blank" class="material-card">
+                    <div class="material-icon-box">
+                        <span class="material-symbols-outlined">description</span>
+                    </div>
+                    <div class="material-details">
+                        <strong>{{ .Nome }}</strong>
+                        <span>Clique para baixar</span>
+                    </div>
+                    <span class="material-symbols-outlined" style="margin-left: auto; color: #475569;">download</span>
+                </a>
+                {{ else }}
+                <p style="color: #64748b; font-style: italic;">Nenhum material extra anexado a esta aula.</p>
+                {{ end }}
+            </div>
+        </div>
+    </main>
+
+    <aside class="course-sidebar">
+        <div class="sidebar-header">
+            <h3>Conteúdo do Curso</h3>
+        </div>
+
+        <nav style="overflow-y: auto; flex: 1;">
+            {{ range .curso.Modulos }}
+            <div class="module-group">
+                <div class="module-name">{{ .Titulo }}</div>
+                {{ range .Aulas }}
+                <a href="?aula={{ .ID }}" class="lesson-item {{ if eq $.aulaAtual.ID .ID }}active{{ end }}"
+                    onclick="trocarAula(event, '{{ .ID }}', '{{ .Titulo }}', '{{ .VideoURL }}')">
+                    <span class="material-symbols-outlined">
+                        {{ if eq $.aulaAtual.ID .ID }}play_circle{{ else }}lock_open{{ end }}
+                    </span>
+                    {{ .Titulo }}
+                </a>
+                {{ end }}
+            </div>
+            {{ end }}
+        </nav>
+    </aside>
+</div>
+
+
+<script>
+    function trocarAula(event, id, titulo, videoUrl) {
+        if (videoUrl === "" || videoUrl === "undefined") {
+            return;
+        }
+
+        event.preventDefault();
+
+        const video = document.getElementById('main-video');
+        if (video) {
+            video.src = "/" + videoUrl;
+            video.play();
+        }
+
+        document.getElementById('aula-titulo-display').innerText = titulo;
+        document.querySelectorAll('.lesson-item').forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        const newUrl = window.location.pathname + '?aula=' + id;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+
+        // NOTA SÊNIOR: Para atualizar os materiais sem dar refresh, 
+        // precisaríamos de um fetch('/api/professor/aulas/' + id + '/materiais')
+        // Por enquanto, o professor pode dar F5 para ver os materiais da aula nova, 
+        // ou você pode remover o preventDefault() para simplicidade total.
+    }
+</script>
+{{ end }}

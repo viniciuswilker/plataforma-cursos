@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/viniciuswilker/plataforma-cursos/internal/database"
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
+	"github.com/viniciuswilker/plataforma-cursos/internal/repositorios"
 	"github.com/viniciuswilker/plataforma-cursos/internal/services"
 )
 
@@ -103,6 +104,28 @@ func CriarModulo(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, novoModulo)
 }
+func ExcluirModulo(c *gin.Context) {
+	moduloID := c.Param("id")
+	idRaw, _ := c.Get("usuarioID")
+	instrutorID := uint(idRaw.(float64))
+
+	var modulo models.Modulo
+	err := database.DB.Joins("JOIN cursos ON cursos.id = modulos.curso_id").
+		Where("modulos.id = ? AND cursos.instrutor_id = ?", moduloID, instrutorID).
+		First(&modulo).Error
+
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Você não tem permissão para excluir este módulo"})
+		return
+	}
+
+	if err := database.DB.Delete(&modulo).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao excluir módulo"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Módulo e aulas removidos com sucesso"})
+}
 
 func CriarAula(c *gin.Context) {
 
@@ -140,4 +163,48 @@ func CriarAula(c *gin.Context) {
 
 	database.DB.Create(&aula)
 	c.JSON(http.StatusCreated, aula)
+}
+func AssistirCursoAdm(c *gin.Context) {
+	cursoID := c.Param("id")
+	aulaIDQuery := c.Query("aula")
+
+	idRaw, _ := c.Get("usuarioID")
+	var instrutorID uint
+	if val, ok := idRaw.(float64); ok {
+		instrutorID = uint(val)
+	} else {
+		instrutorID = idRaw.(uint)
+	}
+
+	usuario, err := repositorios.BuscarPorID(instrutorID)
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/login")
+		return
+	}
+
+	var curso models.Curso
+	err = database.DB.Preload("Modulos.Aulas").
+		Where("id = ? AND instrutor_id = ?", cursoID, instrutorID).
+		First(&curso).Error
+
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/professor/cursos/")
+		return
+	}
+
+	var aulaAtual models.Aula
+	if aulaIDQuery != "" {
+		database.DB.Preload("Materiais").First(&aulaAtual, aulaIDQuery)
+	} else if len(curso.Modulos) > 0 && len(curso.Modulos[0].Aulas) > 0 {
+		aulaAtual = curso.Modulos[0].Aulas[0]
+		database.DB.Model(&aulaAtual).Association("Materiais").Find(&aulaAtual.Materiais)
+	}
+
+	c.HTML(http.StatusOK, "layout", gin.H{
+		"title":     "Assistindo: " + curso.Titulo,
+		"page":      "ver_curso_adm",
+		"curso":     curso,
+		"aulaAtual": aulaAtual,
+		"usuario":   usuario,
+	})
 }
