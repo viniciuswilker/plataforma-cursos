@@ -65,6 +65,7 @@ func ExibirFeed(c *gin.Context) {
 	})
 }
 
+
 func PaginaProfessor(c *gin.Context) {
 
 	idRaw, existe := c.Get("usuarioID")

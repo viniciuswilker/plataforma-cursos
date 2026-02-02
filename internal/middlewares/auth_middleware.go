@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -27,7 +26,7 @@ func Autorizar(cargosPermitidos ...string) gin.HandlerFunc {
 		}
 
 		if tokenString == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"erro": "Token não fornecido"})
+			abortarComErro(c, http.StatusUnauthorized, "Token não fornecido")
 			return
 		}
 
@@ -36,13 +35,17 @@ func Autorizar(cargosPermitidos ...string) gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			fmt.Println("Erro no Parse do JWT:", err)
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"erro": "Token inválido ou expirado"})
+			c.SetCookie("token", "", -1, "/", "", false, true)
+			abortarComErro(c, http.StatusUnauthorized, "Sessão expirada. Faça login novamente")
 			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			cargoUsuario := claims["cargo"].(string)
+			cargoUsuario, okCargo := claims["cargo"].(string)
+			if !okCargo {
+				abortarComErro(c, http.StatusUnauthorized, "Falha ao processar permissões")
+				return
+			}
 
 			permitido := false
 			for _, cPermitido := range cargosPermitidos {
@@ -53,14 +56,24 @@ func Autorizar(cargosPermitidos ...string) gin.HandlerFunc {
 			}
 
 			if !permitido {
-				c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"erro": "Você não tem permissão para acessar este recurso"})
+				abortarComErro(c, http.StatusForbidden, "Você não tem permissão para acessar este recurso")
 				return
 			}
 
 			c.Set("usuarioID", claims["sub"])
 			c.Next()
 		} else {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"erro": "Falha ao processar permissões"})
+			abortarComErro(c, http.StatusUnauthorized, "Falha ao processar claims")
 		}
 	}
+}
+
+func abortarComErro(c *gin.Context, status int, mensagem string) {
+	if strings.HasPrefix(c.Request.URL.Path, "/api/") {
+		c.AbortWithStatusJSON(status, gin.H{"erro": mensagem})
+		return
+	}
+
+	c.Abort()
+	c.Redirect(http.StatusSeeOther, "/login")
 }
