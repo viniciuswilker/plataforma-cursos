@@ -4,14 +4,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{ .title }}</title>
-
+    <title>{{ .title }} | EduStream</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <style>
+        :root {
+            --primary: #137fec;
+            --primary-light: #e7f2ff;
+            --bg-body: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -20,139 +31,231 @@
         }
 
         body {
-            background: #f6f7f8;
-            color: #0f172a;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
-            max-width: 1440px;
-            margin: auto;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 0 24px;
+            width: 100%;
         }
 
-
+        /* Header Estilo Glassmorphism */
         .header {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .header-content {
-            height: 64px;
+            height: 72px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-weight: 600;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary);
         }
 
         .logo span {
-            color: #137fec;
-            font-size: 26px;
+            font-size: 32px;
+            font-variation-settings: 'FILL' 1;
         }
 
+        .logo h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+        }
+
+        /* Navegação */
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
         .nav a {
             text-decoration: none;
-            margin: 0 12px;
+            padding: 8px 16px;
             font-weight: 500;
-            color: #64748b;
-            padding-bottom: 4px;
-            transition: 0.2s;
+            color: var(--text-muted);
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
         }
 
         .nav a:hover {
-            color: #137fec;
+            color: var(--primary);
+            background: var(--primary-light);
         }
 
         .nav a.active {
-            color: #137fec;
-            border-bottom: 2px solid #137fec;
+            color: var(--primary);
+            background: var(--primary-light);
+            font-weight: 600;
         }
 
+        .btn-professor {
+            background: var(--text-main);
+            color: var(--white) !important;
+            margin-left: 12px;
+        }
 
-        .profile {
+        .btn-professor:hover {
+            background: #1e293b !important;
+            transform: translateY(-1px);
+        }
+
+        /* Perfil e Ações */
+        .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-
-        .profile img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            gap: 20px;
         }
 
         .icon-btn {
             border: none;
             background: none;
             cursor: pointer;
-            color: #475569;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
             transition: 0.2s;
+            position: relative;
         }
 
         .icon-btn:hover {
-            color: #137fec;
+            color: var(--primary);
         }
 
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid var(--white);
+        }
 
+        .profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: 0.2s;
+            background: var(--white);
+        }
+
+        .profile-trigger:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-trigger img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Main Content wrapper */
+        main {
+            flex: 1;
+            padding-top: 32px;
+        }
+
+        /* Footer */
         .footer {
-            background: #ffffff;
-            border-top: 1px solid #e5e7eb;
+            background: var(--white);
+            border-top: 1px solid var(--border);
             margin-top: 80px;
-            padding: 48px 0 24px;
+            padding: 60px 0 30px;
         }
 
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 32px;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 40px;
         }
 
-        .footer h3,
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
         .footer h4 {
-            margin-bottom: 12px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
 
         .footer p {
-            color: #64748b;
-            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
         }
 
-        .footer a {
-            display: block;
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
             text-decoration: none;
-            color: #64748b;
-            font-size: 14px;
-            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
             transition: 0.2s;
         }
 
-        .footer a:hover {
-            color: #137fec;
+        .footer-links a:hover {
+            color: var(--primary);
         }
 
-        .copyright {
-            text-align: center;
-            margin-top: 32px;
-            font-size: 12px;
-            color: #94a3b8;
+        .footer-bottom {
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
         }
 
-        .nome-sistema {
-            font-size: 1em;
-        }
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
 
-        .img-user {
-            cursor: pointer;
+            /* Ideal implementar menu hambúrguer */
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
         }
     </style>
 </head>
@@ -161,86 +264,91 @@
 
     <header class="header">
         <div class="container header-content">
-            <div class="logo">
+            <a href="/feed/" class="logo">
                 <span class="material-symbols-outlined">school</span>
-                <h2 class="nome-sistema">EduStream</h2>
-            </div>
+                <h2>EduStream</h2>
+            </a>
 
             <nav class="nav">
-                <a href="/feed/" class="{{ if eq .page " home" }}active{{ end }}">Início</a>
-                <a href="/cursos/meus-cursos/">Meus cursos</a>
-                <a href="/perfil/">Perfil</a>
+                <a href="/feed/" class="{{ if eq .page " feed" }}active{{ end }}">Início</a>
+                <a href="/cursos/meus-cursos/" class="{{ if eq .page " meus_cursos" }}active{{ end }}">Meus cursos</a>
+                <a href="/perfil/" class="{{ if eq .page " perfil" }}active{{ end }}">Perfil</a>
 
                 {{ if or (eq .usuario.Cargo "instrutor") (eq .usuario.Cargo "admin") }}
-                <a href="/professor/cursos" class="btn-destaque">Página do Professor</a>
+                <a href="/professor/cursos" class="btn-professor">Painel Instrutor</a>
                 {{ end }}
             </nav>
 
-            <div class="profile">
+            <div class="header-actions">
                 <button class="icon-btn">
                     <span class="material-symbols-outlined">notifications</span>
+                    <div class="notification-dot"></div>
                 </button>
-                <img src="https://i.pravatar.cc/40" alt="profile" class="img-user">
+
+                <div class="profile-trigger" onclick="window.location.href='/perfil/'">
+                    <img src="https://i.pravatar.cc/100?u={{ .usuario.ID }}" alt="Avatar">
+                    <span class="material-symbols-outlined"
+                        style="font-size: 18px; color: var(--text-muted);">expand_more</span>
+                </div>
             </div>
         </div>
     </header>
 
-
-
-    {{ if eq .page "feed" }}
-    {{ template "feed_content" . }}
-
-    {{ else if eq .page "professor" }}
-    {{ template "professor_content" . }}
-
-    {{ else if eq .page "editar_curso" }}
-    {{ template "curso_edicao" . }}
-
-    {{ else if eq .page "ver_curso_adm" }}
-    {{ template "ver_curso_adm" . }}
-
-    {{ else if eq .page "conteudo_curso" }}
-    {{ template "conteudo_curso" . }}
-
-    {{ else if eq .page "ver_curso_aluno" }}
-    {{ template "ver_curso_aluno" . }}
-
-    {{ else if eq .page "meus_cursos" }}
-    {{ template "meus_cursos" . }}
-
-    {{ else if eq .page "perfil" }}
-    {{ template "perfil" . }}
-
-    {{ else }}
-    <div class="container">
-        <p>Página não encontrada ou bloco não definido. (Page: {{ .page }})</p>
-    </div>
-    {{ end }}
-
+    <main>
+        <div class="container">
+            {{ if eq .page "feed" }} {{ template "feed_content" . }}
+            {{ else if eq .page "professor" }} {{ template "professor_content" . }}
+            {{ else if eq .page "editar_curso" }} {{ template "curso_edicao" . }}
+            {{ else if eq .page "ver_curso_adm" }} {{ template "ver_curso_adm" . }}
+            {{ else if eq .page "conteudo_curso" }} {{ template "conteudo_curso" . }}
+            {{ else if eq .page "ver_curso_aluno" }} {{ template "ver_curso_aluno" . }}
+            {{ else if eq .page "meus_cursos" }} {{ template "meus_cursos" . }}
+            {{ else if eq .page "perfil" }} {{ template "perfil" . }}
+            {{ else }}
+            <div style="text-align: center; padding: 100px 0;">
+                <span class="material-symbols-outlined"
+                    style="font-size: 64px; color: var(--border);">Running_with_errors</span>
+                <p style="margin-top: 16px; color: var(--text-muted);">Página não encontrada ({{ .page }})</p>
+            </div>
+            {{ end }}
+        </div>
+    </main>
 
     <footer class="footer">
-        <div class="container footer-grid">
-            <div>
-                <h3>EduStream</h3>
-                <p>A maior plataforma de ensino do brasil.</p>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>EduStream</h3>
+                    <p>A maior plataforma de ensino do Brasil. Aprenda com os melhores e transforme sua carreira.</p>
+                </div>
+
+                <div>
+                    <h4>Plataforma</h4>
+                    <ul class="footer-links">
+                        <li><a href="/feed/">Procurar cursos</a></li>
+                        <li><a href="#">Certificados</a></li>
+                        <li><a href="#">Projetos</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4>Suporte</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Central de Ajuda</a></li>
+                        <li><a href="#">Privacidade</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div>
-                <h4>Platforma</h4>
-                <a href="#">Procurar cursos</a>
-                <a href="#">Certificados</a>
-            </div>
-
-            <div>
-                <h4>Suporte</h4>
-                <a href="#">Ajuda</a>
-                <a href="#">Privacidade</a>
+            <div class="footer-bottom">
+                <p>© 2026 EduStream. Desenvolvido por Vinicius Wilker</p>
+                <div style="display: flex; gap: 20px;">
+                    <a href="#" style="color: var(--text-muted); text-decoration: none;">LinkedIn</a>
+                    <a href="#" style="color: var(--text-muted); text-decoration: none;">GitHub</a>
+                </div>
             </div>
         </div>
-
-        <p class="copyright">
-            © 2026 Vinicius Wilker
-        </p>
     </footer>
 
 </body>

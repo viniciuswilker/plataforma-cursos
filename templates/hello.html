@@ -4,16 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduStream | Bem vindo </title>
+    <title>EduStream | Bem-vindo</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <style>
         :root {
             --primary: #137fec;
-            --bg-light: #f6f7f8;
-            --bg-dark: #101922;
-            --text: #0f172a;
+            --primary-dark: #0f66be;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
 
         * {
@@ -24,26 +30,32 @@
         }
 
         body {
-            background: var(--bg-light);
-            color: var(--text);
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 1280px;
-            margin: auto;
-            padding: 0 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
+        /* Navbar Otimizada */
         .navbar {
             position: sticky;
             top: 0;
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            height: 72px;
+            display: flex;
+            align-items: center;
         }
 
         .nav-content {
-            height: 64px;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,178 +63,279 @@
 
         .logo {
             display: flex;
-            gap: 8px;
             align-items: center;
+            gap: 10px;
             font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
         }
 
         .nav-links a {
-            margin: 0 12px;
             text-decoration: none;
-            color: #334155;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: color 0.2s;
         }
 
-        .nav-actions button {
-            margin-left: 10px;
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Modernizado */
+        .hero {
+            margin-top: 40px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            padding: 100px 40px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+        }
+
+        /* Search Box Elevada */
+        .search-box {
+            display: flex;
+            background: white;
+            padding: 8px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            outline: none;
+            color: var(--text-main);
         }
 
         .btn-primary {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .btn-outline {
-            background: none;
-            border: 1px solid #cbd5e1;
-            padding: 10px 16px;
-            border-radius: 8px;
-        }
-
-        .hero {
-            margin-top: 32px;
-            border-radius: 16px;
-            padding: 80px 40px;
-            color: white;
-            background:
-                linear-gradient(rgba(16, 25, 34, .8), rgba(16, 25, 34, .95)),
-                url("https://images.unsplash.com/photo-1519389950473-47ba0277781c");
-            background-size: cover;
-            background-position: center;
-        }
-
-        .hero-content {
-            max-width: 700px;
-            margin: auto;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .search-box {
-            margin-top: 32px;
-            display: flex;
-            background: white;
+            padding: 12px 28px;
             border-radius: 12px;
-            overflow: hidden;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .search-box input,
-        .search-box select {
-            border: none;
-            padding: 14px;
-            flex: 1;
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
-        .search-box button {
-            border: none;
-        }
-
+        /* Grid de Cursos */
         .section-header {
-            margin: 48px 0 24px;
+            margin: 64px 0 32px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
         }
 
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
         }
 
         .course-card {
-            background: white;
-            border-radius: 14px;
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
-            transition: .3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .course-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            border-color: var(--primary);
         }
 
         .course-img {
-            height: 160px;
+            height: 180px;
             background-size: cover;
             background-position: center;
+            position: relative;
+        }
+
+        .course-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            backdrop-filter: blur(4px);
         }
 
         .course-body {
-            padding: 16px;
+            padding: 24px;
         }
 
-        .course-body button {
-            margin-top: 12px;
+        .course-body h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            height: 2.8rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .course-body p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-full {
+            width: 100%;
+            background: #f1f5f9;
+            color: var(--text-main);
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .course-card:hover .btn-full {
             background: var(--primary);
             color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
         }
 
+        /* CTA */
         .cta {
-            margin: 80px 0;
-            padding: 48px;
-            background: #0f172a;
+            margin: 100px 0;
+            background: var(--primary);
+            padding: 60px;
+            border-radius: 32px;
             color: white;
-            border-radius: 16px;
             text-align: center;
+            background-image: radial-gradient(circle at top right, #3b82f6, transparent);
         }
 
-        .btn-light {
-            cursor: pointer;
-            margin-top: 16px;
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .btn-white {
             background: white;
-            color: black;
+            color: var(--primary);
+            padding: 16px 32px;
+            border-radius: 14px;
             border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
+            font-weight: 700;
+            margin-top: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
         }
 
+        /* Footer */
         .footer {
-            margin-top: 80px;
-            padding: 48px 0;
             background: white;
-            border-top: 1px solid #e5e7eb;
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border);
         }
 
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 32px;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+        }
+
+        .footer h3,
+        .footer h4 {
+            margin-bottom: 20px;
         }
 
         .footer a {
-            display: block;
-            color: #64748b;
-            margin-top: 8px;
             text-decoration: none;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: block;
         }
 
-        .btn-nav {
-            cursor: pointer;
+        .footer a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
         }
     </style>
-
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 </head>
 
 <body>
 
     <header class="navbar">
         <div class="container nav-content">
-            <div class="logo">
+            <a href="/" class="logo">
                 <span class="material-symbols-outlined">school</span>
-                <h2>EduStream</h2>
-            </div>
+                EduStream
+            </a>
 
             <nav class="nav-links">
                 <a href="#">Cursos</a>
@@ -231,8 +344,10 @@
             </nav>
 
             <div class="nav-actions">
-                <button class="btn-outline btn-nav" onclick="window.location.href='/login'">Entrar</button>
-                <button class="btn-primary btn-nav" onclick="window.location.href='/cadastro'">Cadastro</button>
+                <button class="btn-outline"
+                    style="border:none; color:var(--text-muted); font-weight:600; cursor:pointer;"
+                    onclick="window.location.href='/login'">Entrar</button>
+                <button class="btn-primary" onclick="window.location.href='/cadastro'">Começar agora</button>
             </div>
         </div>
     </header>
@@ -242,17 +357,18 @@
         <section class="hero">
             <div class="hero-content">
                 <h1>Desbloqueie seu potencial com EduStream</h1>
-                <p>Domine as habilidades mais requisitadas e impulsione sua carreira.</p>
+                <p>Domine as habilidades mais requisitadas com os melhores professores do mercado.</p>
 
                 <form action="/" method="GET" class="search-box">
-                    <input type="text" name="q" value="{{ .busca }}" placeholder="O que você quer aprender?">
-                    <button type="submit" class="btn-primary">Search</button>
+                    <input type="text" name="q" value="{{ .busca }}" placeholder="O que você quer aprender hoje?">
+                    <button type="submit" class="btn-primary">Buscar</button>
                 </form>
             </div>
         </section>
 
         <section class="section-header">
-            <h2>Cursos Populares</h2>
+            <h2>Cursos em destaque</h2>
+            <div style="color: var(--primary); font-weight: 600; cursor: pointer;">Ver todos →</div>
         </section>
 
         <section class="courses-grid">
@@ -261,24 +377,28 @@
             <div class="course-card">
                 <div class="course-img"
                     style="background-image:url('{{ if .CapaURL }}{{ .CapaURL }}{{ else }}https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600{{ end }}')">
+                    <span class="course-badge">Novo</span>
                 </div>
 
                 <div class="course-body">
                     <h3>{{ .Titulo }}</h3>
                     <p>{{ .Descricao }}</p>
-                    <button onclick="window.location.href='/curso/{{ .ID }}'">Ver curso</button>
+                    <button class="btn-full" onclick="window.location.href='/curso/{{ .ID }}'">Acessar Conteúdo</button>
                 </div>
             </div>
             {{ end }}
             {{ else }}
-            <p>Nenhum curso disponível no momento. Volte mais tarde!</p>
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-muted);">
+                <span class="material-symbols-outlined" style="font-size: 48px;">sentiment_dissatisfied</span>
+                <p>Nenhum curso encontrado no momento.</p>
+            </div>
             {{ end }}
         </section>
 
         <section class="cta">
-            <h2>Se torne um professor hoje</h2>
-            <p>entre na maior comunidade de cursos online.</p>
-            <button class="btn-light">Comece a ensinar</button>
+            <h2>Transforme seu conhecimento em impacto</h2>
+            <p>Junte-se a milhares de instrutores e comece a ensinar hoje mesmo.</p>
+            <button class="btn-white">Criar meu curso</button>
         </section>
 
     </main>
@@ -286,28 +406,30 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div>
-                <h3>EduStream</h3>
-                <p>A maior comunidade de cursos online.</p>
+                <h3 style="color:var(--primary)">EduStream</h3>
+                <p style="color:var(--text-muted)">Capacitando mentes através da educação digital de alta qualidade.</p>
             </div>
             <div>
-                <h4>Plataforma</h4>
-                <a href="#">Cursos</a>
+                <h4>Explorar</h4>
+                <a href="#">Todos os Cursos</a>
+                <a href="#">Categorias</a>
                 <a href="#">Certificados</a>
             </div>
             <div>
-                <h4>Suporte</h4>
-                <a href="#">Ajuda</a>
-                <a href="#">Privacidade</a>
+                <h4>Empresa</h4>
+                <a href="#">Sobre nós</a>
+                <a href="#">Carreiras</a>
+                <a href="#">Blog</a>
             </div>
             <div>
-                <h4>Comunidade</h4>
-                <a href="#">Blog</a>
-                <a href="#">Professor</a>
+                <h4>Suporte</h4>
+                <a href="#">Centro de Ajuda</a>
+                <a href="#">Termos de Uso</a>
+                <a href="#">Privacidade</a>
             </div>
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
 </body>
 
-</html>e
+</html>
