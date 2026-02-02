@@ -12,7 +12,20 @@ import (
 
 // ExibirHome renderiza a página inicial
 func ExibirHome(c *gin.Context) {
-	c.HTML(http.StatusOK, "hello.html", nil)
+	busca := c.Query("q")
+	var cursos []models.Curso
+
+	if busca != "" {
+		database.DB.Where("titulo LIKE ? OR descricao LIKE ?", "%"+busca+"%", "%"+busca+"%").Find(&cursos)
+	} else {
+		// Busca todos
+		database.DB.Find(&cursos)
+	}
+
+	c.HTML(http.StatusOK, "hello.html", gin.H{
+		"cursos": cursos,
+		"busca":  busca,
+	})
 }
 
 // ExibirCadastro renderiza a página de registro
@@ -64,7 +77,6 @@ func ExibirFeed(c *gin.Context) {
 		"cursos":  cursos,
 	})
 }
-
 
 func PaginaProfessor(c *gin.Context) {
 

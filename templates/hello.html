@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XXXXX</title>
+    <title>EduStream | Bem vindo </title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -221,7 +221,7 @@
         <div class="container nav-content">
             <div class="logo">
                 <span class="material-symbols-outlined">school</span>
-                <h2>XXXX</h2>
+                <h2>EduStream</h2>
             </div>
 
             <nav class="nav-links">
@@ -241,49 +241,38 @@
 
         <section class="hero">
             <div class="hero-content">
-                <h1>Desbloqueie seu potencial com XXX</h1>
+                <h1>Desbloqueie seu potencial com EduStream</h1>
                 <p>Domine as habilidades mais requisitadas e impulsione sua carreira.</p>
 
-                <div class="search-box">
-                    <input type="text" placeholder="O que você quer aprender?">
-                    <!-- <select>
-                        <option>Todos</option>
-                        <option>Development</option>
-                        <option>Design</option>
-                        <option>Business</option>
-                    </select> -->
-                    <button class="btn-primary">Search</button>
-                </div>
+                <form action="/" method="GET" class="search-box">
+                    <input type="text" name="q" value="{{ .busca }}" placeholder="O que você quer aprender?">
+                    <button type="submit" class="btn-primary">Search</button>
+                </form>
             </div>
         </section>
 
         <section class="section-header">
             <h2>Cursos Populares</h2>
-            <!-- <a href="#">View all →</a> -->
         </section>
 
         <section class="courses-grid">
-
+            {{ if .cursos }}
+            {{ range .cursos }}
             <div class="course-card">
                 <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c')"></div>
+                    style="background-image:url('{{ if .CapaURL }}{{ .CapaURL }}{{ else }}https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600{{ end }}')">
+                </div>
+
                 <div class="course-body">
-                    <h3>Full-Stack Web Development 2024</h3>
-                    <p>Aprenda do básico ao avançado.</p>
-                    <button>Ver curso</button>
+                    <h3>{{ .Titulo }}</h3>
+                    <p>{{ .Descricao }}</p>
+                    <button onclick="window.location.href='/curso/{{ .ID }}'">Ver curso</button>
                 </div>
             </div>
-
-            <div class="course-card">
-                <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1551434678-e076c223a692')"></div>
-                <div class="course-body">
-                    <h3>UI/UX Fundamentals</h3>
-                    <p>Learn user-centered design principles.</p>
-                    <button>Ver curso</button>
-                </div>
-            </div>
-
+            {{ end }}
+            {{ else }}
+            <p>Nenhum curso disponível no momento. Volte mais tarde!</p>
+            {{ end }}
         </section>
 
         <section class="cta">
@@ -298,22 +287,22 @@
         <div class="container footer-grid">
             <div>
                 <h3>EduStream</h3>
-                <p>The ultimate learning platform.</p>
+                <p>A maior comunidade de cursos online.</p>
             </div>
             <div>
-                <h4>Platform</h4>
-                <a href="#">Courses</a>
-                <a href="#">Certification</a>
+                <h4>Plataforma</h4>
+                <a href="#">Cursos</a>
+                <a href="#">Certificados</a>
             </div>
             <div>
-                <h4>Support</h4>
-                <a href="#">Help Center</a>
-                <a href="#">Privacy</a>
+                <h4>Suporte</h4>
+                <a href="#">Ajuda</a>
+                <a href="#">Privacidade</a>
             </div>
             <div>
-                <h4>Community</h4>
+                <h4>Comunidade</h4>
                 <a href="#">Blog</a>
-                <a href="#">Instructor Hub</a>
+                <a href="#">Professor</a>
             </div>
         </div>
     </footer>
