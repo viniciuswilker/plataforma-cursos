@@ -1,5 +1,4 @@
-database.db
+.git
 data/
-uploads/
-node_modules/
-.git/
+database.db
+bin/

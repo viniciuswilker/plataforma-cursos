@@ -6,6 +6,7 @@ import (
 
 	"github.com/glebarez/sqlite"
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -13,16 +14,19 @@ var DB *gorm.DB
 
 func Conectar() {
 	var err error
+	var dialector gorm.Dialector
 
-	dbPath := os.Getenv("DATABASE_URL")
-	if dbPath == "" {
-		dbPath = "database.db"
+	dsn := os.Getenv("DATABASE_URL")
+
+	if dsn == "" {
+		dialector = sqlite.Open("data/database.db")
+	} else {
+		dialector = postgres.Open(dsn)
 	}
 
-	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
-
+	DB, err = gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
-		log.Fatal("Falha ao conectar com o banco de dados: ", err)
+		log.Fatal("Erro ao conectar ao banco:", err)
 	}
 
 	DB.AutoMigrate(
