@@ -5,6 +5,11 @@ import (
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
 )
 
+type StatsProfessor struct {
+	TotalAlunos int64
+	TotalCursos int64
+}
+
 func CriarCurso(curso *models.Curso) error {
 	return database.DB.Create(curso).Error
 }
@@ -30,4 +35,23 @@ func ListarCursosPorInstrutor(instrutorID uint) ([]models.Curso, error) {
 
 func CriarAula(aula *models.Aula) error {
 	return database.DB.Create(aula).Error
+}
+
+func ObterStatsProfessor(instrutorID uint) (StatsProfessor, error) {
+	var stats StatsProfessor
+
+	err := database.DB.Table("matriculas").
+		Joins("JOIN cursos ON cursos.id = matriculas.curso_id").
+		Where("cursos.instrutor_id = ?", instrutorID).
+		Count(&stats.TotalAlunos).Error
+
+	if err != nil {
+		return stats, err
+	}
+
+	err = database.DB.Model(&models.Curso{}).
+		Where("instrutor_id = ?", instrutorID).
+		Count(&stats.TotalCursos).Error
+
+	return stats, err
 }

@@ -230,7 +230,7 @@
             <article class="module-item">
                 <div class="module-ctrl">
                     <span class="material-symbols-outlined" style="color: #cbd5e1; cursor: grab;">drag_indicator</span>
-                    <input type="text" class="module-title-input" value="{{ .Titulo }}"
+                    <input type="text" readonly class="module-title-input" value="{{ .Titulo }}"
                         onchange="salvarModulo('{{ .ID }}', this.value)">
                     <button class="btn-icon" onclick="excluirModulo('{{ .ID }}')"
                         style="background:none; border:none; color: #ef4444; cursor:pointer;">

@@ -80,12 +80,14 @@ func PaginaProfessor(c *gin.Context) {
 		return
 	}
 
+	stats, _ := repositorios.ObterStatsProfessor(id)
 	cursos, _ := repositorios.ListarCursosPorInstrutor(id)
 
 	c.HTML(http.StatusOK, "layout", gin.H{
 		"title":   "Pagina do professor",
 		"page":    "professor",
 		"usuario": usuario,
+		"stats":   stats,
 		"cursos":  cursos,
 	})
 }

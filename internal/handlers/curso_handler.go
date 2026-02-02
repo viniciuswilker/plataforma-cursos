@@ -104,6 +104,8 @@ func CriarModulo(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, novoModulo)
 }
+
+
 func ExcluirModulo(c *gin.Context) {
 	moduloID := c.Param("id")
 	idRaw, _ := c.Get("usuarioID")

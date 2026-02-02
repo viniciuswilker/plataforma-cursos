@@ -283,17 +283,17 @@
 <section class="container stats">
     <div class="stat-card">
         Total de Alunos
-        <span>1.240</span>
+        <span>{{ .stats.TotalAlunos }}</span>
     </div>
 
     <div class="stat-card">
         Cursos Ativos
-        <span>12</span>
+        <span>{{ .stats.TotalCursos }}</span>
     </div>
 
     <div class="stat-card">
         Receita Total
-        <span>R$ 4.500,00</span>
+        <span>R$ 0</span>
     </div>
 </section>
 
@@ -311,6 +311,10 @@
 
             <div class="course-info">
                 <span>👤 {{ .TotalAlunos }} alunos</span> <span>⭐ 5.0</span>
+            </div>
+
+            <div class="course-footer">
+                <button onclick="window.location.href='/professor/cursos/{{ .ID }}/assistir/'">Assistir</button>
             </div>
 
             <div class="course-footer">
