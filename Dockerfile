@@ -10,19 +10,18 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/main.go
+RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/api/main.go
 
 FROM debian:bookworm-slim
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-
 COPY --from=builder /app/main .
 COPY --from=builder /app/templates ./templates
 COPY --from=builder /app/static ./static
-COPY --from=builder /app/uploads ./uploads
+RUN mkdir -p data uploads/videos
 
 EXPOSE 8080
 
-CMD ["./main"]
+CMD ["sh", "-c", "./main"]

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: plataforma-cursos
+    env: docker
+    plan: free 
+    region: ohio
+    envVars:
+      - key: GIN_MODE
+        value: release
+      - key: DATABASE_URL
+        value: /var/data/database.db # Caminho dentro do disco do Render
+    disk:
+      name: sqlite-data
+      mountPath: /var/data
+      sizeGB: 1

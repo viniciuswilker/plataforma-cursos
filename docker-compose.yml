@@ -5,6 +5,6 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./dados_db:/app/dados_db
+      - ./data:/app/data
       - ./uploads:/app/uploads
     restart: always

@@ -1,5 +1,5 @@
 APP_NAME=plataforma-cursos
-DOCKER_COMPOSE=docker-compose
+DOCKER_COMPOSE=docker compose
 
 .PHONY: build run test docker-up docker-down clean
 

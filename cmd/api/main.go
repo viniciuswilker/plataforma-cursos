@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/viniciuswilker/plataforma-cursos/internal/database"
 	"github.com/viniciuswilker/plataforma-cursos/internal/routes"
@@ -17,6 +19,10 @@ func main() {
 
 	routes.ConfigurarRotas(servidor)
 
-	servidor.Run(":8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	servidor.Run(":" + port)
 
 }
