@@ -105,7 +105,6 @@ func CriarModulo(c *gin.Context) {
 	c.JSON(http.StatusCreated, novoModulo)
 }
 
-
 func ExcluirModulo(c *gin.Context) {
 	moduloID := c.Param("id")
 	idRaw, _ := c.Get("usuarioID")
@@ -166,6 +165,7 @@ func CriarAula(c *gin.Context) {
 	database.DB.Create(&aula)
 	c.JSON(http.StatusCreated, aula)
 }
+
 func AssistirCursoAdm(c *gin.Context) {
 	cursoID := c.Param("id")
 	aulaIDQuery := c.Query("aula")
@@ -209,4 +209,74 @@ func AssistirCursoAdm(c *gin.Context) {
 		"aulaAtual": aulaAtual,
 		"usuario":   usuario,
 	})
+}
+
+func MatricularAluno(c *gin.Context) {
+	cursoID := c.Param("id")
+	idRaw, _ := c.Get("usuarioID")
+
+	var alunoID uint
+	if val, ok := idRaw.(float64); ok {
+		alunoID = uint(val)
+	} else {
+		alunoID = idRaw.(uint)
+	}
+
+	var matriculaExistente models.Matricula
+	err := database.DB.Where("curso_id = ? AND usuario_id = ?", cursoID, alunoID).First(&matriculaExistente).Error
+
+	if err == nil {
+		c.Redirect(http.StatusSeeOther, "/cursos/"+cursoID+"/assistir")
+		return
+	}
+
+	novaMatricula := models.Matricula{
+		CursoID:   uint(parseID(cursoID)),
+		UsuarioID: alunoID,
+	}
+
+	if err := database.DB.Create(&novaMatricula).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao realizar matrícula"})
+		return
+	}
+
+	c.Redirect(http.StatusSeeOther, "/cursos/"+cursoID+"/assistir")
+}
+
+func AssistirCurso(c *gin.Context) {
+	cursoID := c.Param("id")
+	idRaw, _ := c.Get("usuarioID")
+	usuarioID := uint(idRaw.(float64))
+
+	var matricula models.Matricula
+	if err := database.DB.Where("curso_id = ? AND usuario_id = ?", cursoID, usuarioID).First(&matricula).Error; err != nil {
+		c.Redirect(http.StatusSeeOther, "/cursos/"+cursoID+"/")
+		return
+	}
+
+	usuario, _ := repositorios.BuscarPorID(usuarioID)
+
+	var curso models.Curso
+	database.DB.Preload("Modulos.Aulas.Materiais").First(&curso, cursoID)
+
+	aulaID := c.Query("aula")
+	var aulaAtual models.Aula
+	if aulaID != "" {
+		database.DB.Preload("Materiais").First(&aulaAtual, aulaID)
+	} else if len(curso.Modulos) > 0 && len(curso.Modulos[0].Aulas) > 0 {
+		aulaAtual = curso.Modulos[0].Aulas[0]
+	}
+
+	c.HTML(http.StatusOK, "layout", gin.H{
+		"title":     "Assistindo: " + curso.Titulo,
+		"page":      "ver_curso_aluno",
+		"curso":     curso,
+		"aulaAtual": aulaAtual,
+		"usuario":   usuario,
+	})
+}
+
+func parseID(id string) uint {
+	val, _ := strconv.ParseUint(id, 10, 32)
+	return uint(val)
 }

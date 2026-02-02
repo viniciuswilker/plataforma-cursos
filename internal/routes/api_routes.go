@@ -15,24 +15,18 @@ func RegistrarRotasAPI(router *gin.Engine) {
 
 	api := router.Group("/api")
 	api.Use(middlewares.Autorizar("aluno", "instrutor", "admin"))
-
-	professor := api.Group("/professor")
-	professor.Use(middlewares.Autorizar("instrutor", "admin"))
 	{
-		professor.POST("/cursos/criar", handlers.CriarCurso)
-		professor.POST("/aulas/criar", handlers.CriarAula)
+		api.POST("/cursos/:id/matricular", handlers.MatricularAluno)
 
-		professor.POST("/modulos/criar", handlers.CriarModulo)
-		professor.DELETE("/modulos/:id", handlers.ExcluirModulo)
-	}
-
-	{
 		api.GET("/cursos", handlers.ListarCursos)
 
-		admin := api.Group("/cursos")
-		admin.Use(middlewares.Autorizar("instrutor", "admin"))
+		professor := api.Group("/professor")
+		professor.Use(middlewares.Autorizar("instrutor", "admin"))
 		{
-			admin.POST("/", handlers.CriarCurso)
+			professor.POST("/cursos/criar", handlers.CriarCurso)
+			professor.POST("/aulas/criar", handlers.CriarAula)
+			professor.POST("/modulos/criar", handlers.CriarModulo)
+			professor.DELETE("/modulos/:id", handlers.ExcluirModulo)
 		}
 	}
 }

@@ -199,6 +199,12 @@
     {{ else if eq .page "ver_curso_adm" }}
     {{ template "ver_curso_adm" . }}
 
+    {{ else if eq .page "conteudo_curso" }}
+    {{ template "conteudo_curso" . }}
+
+    {{ else if eq .page "ver_curso_aluno" }}
+    {{ template "ver_curso_aluno" . }}
+
     {{ else }}
     <div class="container">
         <p>Página não encontrada ou bloco não definido. (Page: {{ .page }})</p>

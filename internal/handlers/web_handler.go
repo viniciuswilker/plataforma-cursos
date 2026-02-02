@@ -46,6 +46,11 @@ func ExibirFeed(c *gin.Context) {
 		return
 	}
 
+	cursos, err := repositorios.ListarCursos()
+	if err != nil {
+		cursos = []models.Curso{}
+	}
+
 	usuario, err := repositorios.BuscarPorID(id)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
@@ -56,6 +61,7 @@ func ExibirFeed(c *gin.Context) {
 		"title":   "Feed de cursos",
 		"page":    "feed",
 		"usuario": usuario,
+		"cursos":  cursos,
 	})
 }
 
@@ -124,5 +130,46 @@ func ExibirEdicaoCurso(c *gin.Context) {
 		"page":    "editar_curso",
 		"usuario": usuario,
 		"curso":   curso,
+	})
+}
+
+func ExibirDetalhesCurso(c *gin.Context) {
+	id := c.Param("id")
+	var curso models.Curso
+
+	err := database.DB.Preload("Instrutor").
+		Preload("Modulos.Aulas").
+		First(&curso, id).Error
+
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/feed")
+		return
+	}
+
+	idRaw, _ := c.Get("usuarioID")
+	var usuarioID uint
+	if val, ok := idRaw.(float64); ok {
+		usuarioID = uint(val)
+	} else {
+		usuarioID = idRaw.(uint)
+	}
+
+	var matriculado bool
+	if idRaw != nil {
+		var count int64
+		database.DB.Model(&models.Matricula{}).
+			Where("curso_id = ? AND usuario_id = ?", id, idRaw).
+			Count(&count)
+		matriculado = count > 0
+	}
+
+	usuario, _ := repositorios.BuscarPorID(usuarioID)
+
+	c.HTML(http.StatusOK, "layout", gin.H{
+		"matriculado": matriculado,
+		"title":       curso.Titulo,
+		"page":        "conteudo_curso",
+		"curso":       curso,
+		"usuario":     usuario,
 	})
 }

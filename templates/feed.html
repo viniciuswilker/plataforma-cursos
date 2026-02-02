@@ -177,91 +177,26 @@
         </div>
 
         <div class="grid-courses">
-
-            <div class="course-card">
+            {{ range .cursos }}
+            <a href="/cursos/{{ .ID }}/" class="course-card" style="text-decoration: none; color: inherit;">
                 <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085')"></div>
+                    style="background-image:url('{{ if .CapaURL }}{{ .CapaURL }}{{ else }}https://images.unsplash.com/photo-1498050108023-c5249f4df085{{ end }}')">
+                </div>
                 <div class="course-body">
-                    <span class="tag">Programação</span>
-                    <h3>Django Completo para Web</h3>
-                    <p>Ana Souza</p>
+                    <span class="tag">Desenvolvimento</span>
+                    <h3>{{ .Titulo }}</h3>
+                    <p>{{ .Instrutor.Nome }} {{ .Instrutor.Sobrenome}}</p>
                     <div class="course-footer">
-                        <span>⭐ 4.9</span>
-                        <strong>R$ 49,90</strong>
+                        <span>⭐ 5.0</span>
+                        <strong>Gratuito</strong>
                     </div>
                 </div>
-            </div>
-
-            <div class="course-card">
-                <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475')"></div>
-                <div class="course-body">
-                    <span class="tag">Frontend</span>
-                    <h3>JavaScript Moderno</h3>
-                    <p>Carlos Lima</p>
-                    <div class="course-footer">
-                        <span>⭐ 4.8</span>
-                        <strong>R$ 39,90</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="course-card">
-                <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71')"></div>
-                <div class="course-body">
-                    <span class="tag">Data Science</span>
-                    <h3>Python para Análise de Dados</h3>
-                    <p>Mariana Rocha</p>
-                    <div class="course-footer">
-                        <span>⭐ 4.7</span>
-                        <strong>R$ 59,90</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="course-card">
-                <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1555949963-aa79dcee981c')"></div>
-                <div class="course-body">
-                    <span class="tag">Backend</span>
-                    <h3>APIs REST com Flask</h3>
-                    <p>João Pedro</p>
-                    <div class="course-footer">
-                        <span>⭐ 4.6</span>
-                        <strong>R$ 34,90</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="course-card">
-                <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1605379399642-870262d3d051')"></div>
-                <div class="course-body">
-                    <span class="tag">DevOps</span>
-                    <h3>Docker para Produção</h3>
-                    <p>Fernanda Alves</p>
-                    <div class="course-footer">
-                        <span>⭐ 4.9</span>
-                        <strong>R$ 69,90</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="course-card">
-                <div class="course-img"
-                    style="background-image:url('https://images.unsplash.com/photo-1551650975-87deedd944c3')"></div>
-                <div class="course-body">
-                    <span class="tag">Mobile</span>
-                    <h3>React Native do Zero</h3>
-                    <p>Lucas Martins</p>
-                    <div class="course-footer">
-                        <span>⭐ 4.8</span>
-                        <strong>R$ 54,90</strong>
-                    </div>
-                </div>
-            </div>
-
+            </a>
+            {{ else }}
+            <p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">
+                Nenhum curso disponível no momento.
+            </p>
+            {{ end }}
         </div>
     </section>
 
