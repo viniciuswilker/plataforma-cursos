@@ -7,6 +7,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
+
 COPY . .
 
 RUN CGO_ENABLED=1 GOOS=linux go build -o main ./cmd/api/main.go
@@ -21,9 +22,9 @@ COPY --from=builder /app/main .
 
 
 COPY --from=builder /app/templates ./templates
+COPY --from=builder /app/static ./static
 
-RUN mkdir -p static uploads/videos data
-COPY --from=builder /app/static/. ./static/ 2>/dev/null || true
+RUN mkdir -p data uploads/videos
 
 EXPOSE 8080
 
