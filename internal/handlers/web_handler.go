@@ -146,6 +146,30 @@ func ExibirEdicaoCurso(c *gin.Context) {
 	})
 }
 
+func PublicoExibirDetalhesCurso(c *gin.Context) {
+	id := c.Param("id")
+	var curso models.Curso
+
+	err := database.DB.Preload("Instrutor").
+		Preload("Modulos.Aulas").
+		First(&curso, id).Error
+
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/")
+		return
+	}
+
+	totalAulas := 0
+	for _, m := range curso.Modulos {
+		totalAulas += len(m.Aulas)
+	}
+
+	c.HTML(http.StatusOK, "preview_curso_publico.html", gin.H{
+		"title":      curso.Titulo,
+		"curso":      curso,
+		"totalAulas": totalAulas,
+	})
+}
 func ExibirDetalhesCurso(c *gin.Context) {
 	id := c.Param("id")
 	var curso models.Curso
