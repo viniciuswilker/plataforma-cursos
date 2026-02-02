@@ -173,3 +173,50 @@ func ExibirDetalhesCurso(c *gin.Context) {
 		"usuario":     usuario,
 	})
 }
+
+func ExibirMeusCursos(c *gin.Context) {
+	idRaw, _ := c.Get("usuarioID")
+	var usuarioID uint
+	if val, ok := idRaw.(float64); ok {
+		usuarioID = uint(val)
+	} else {
+		usuarioID = idRaw.(uint)
+	}
+
+	usuario, _ := repositorios.BuscarPorID(usuarioID)
+	cursos, err := repositorios.BuscarCursosMatriculados(usuarioID)
+
+	if err != nil {
+		cursos = []models.Curso{}
+	}
+
+	c.HTML(http.StatusOK, "layout", gin.H{
+		"title":   "Meus Cursos",
+		"page":    "meus_cursos",
+		"usuario": usuario,
+		"cursos":  cursos,
+	})
+}
+
+func ExibirPerfil(c *gin.Context) {
+	idRaw, _ := c.Get("usuarioID")
+	var usuarioID uint
+	if val, ok := idRaw.(float64); ok {
+		usuarioID = uint(val)
+	} else {
+		usuarioID = idRaw.(uint)
+	}
+
+	usuario, total, err := repositorios.ObterResumoPerfil(usuarioID)
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/login")
+		return
+	}
+
+	c.HTML(http.StatusOK, "layout", gin.H{
+		"title":       "Meu Perfil",
+		"page":        "perfil",
+		"usuario":     usuario,
+		"totalCursos": total,
+	})
+}

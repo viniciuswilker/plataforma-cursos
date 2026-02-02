@@ -1,0 +1,126 @@
+{{ define "perfil" }}
+<style>
+    :root {
+        --primary: #137fec;
+        --primary-soft: #e7f2fd;
+        --bg-body: #f1f5f9;
+        --card-bg: #ffffff;
+        --text-main: #0f172a;
+        --text-sub: #64748b;
+        --border-color: #e2e8f0;
+    }
+
+    .perfil-container {
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 0 24px;
+    }
+
+    .perfil-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+
+    .avatar-grande {
+        width: 100px;
+        height: 100px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0 auto 24px;
+        text-transform: uppercase;
+    }
+
+    .perfil-info h1 {
+        font-size: 24px;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    .perfil-info p {
+        color: var(--text-sub);
+        margin: 4px 0 24px;
+    }
+
+    .stats-row {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 32px;
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+
+    .stat-item b {
+        display: block;
+        font-size: 20px;
+        color: var(--primary);
+    }
+
+    .stat-item span {
+        font-size: 13px;
+        color: var(--text-sub);
+    }
+
+    .btn-logout {
+        background: #fee2e2;
+        color: #ef4444;
+        border: 1px solid #fecaca;
+        padding: 14px 24px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-logout:hover {
+        background: #ef4444;
+        color: white;
+    }
+</style>
+
+<div class="perfil-container">
+    <div class="perfil-card">
+        <div class="avatar-grande">
+            {{ printf "%.1s" .usuario.Nome }}
+        </div>
+
+        <div class="perfil-info">
+            <h1>{{ .usuario.Nome }} {{ .usuario.Sobrenome }}</h1>
+            <p>{{ .usuario.Email }}</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <b>{{ .totalCursos }}</b>
+                <span>Cursos Matriculados</span>
+            </div>
+            <div class="stat-item">
+                <b>{{ if eq .usuario.Cargo "instrutor" }}Professor{{ else }}Aluno{{ end }}</b>
+                <span>Cargo</span>
+            </div>
+        </div>
+
+        <a href="/auth/logout" class="btn-logout">
+            <span class="material-symbols-outlined">logout</span>
+            Sair da conta
+        </a>
+    </div>
+</div>
+{{ end }}

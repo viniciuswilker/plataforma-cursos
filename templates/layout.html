@@ -168,8 +168,8 @@
 
             <nav class="nav">
                 <a href="/feed/" class="{{ if eq .page " home" }}active{{ end }}">Início</a>
-                <a href="#">Categorias</a>
-                <a href="/meus-cursos/">Meus cursos</a>
+                <a href="/cursos/meus-cursos/">Meus cursos</a>
+                <a href="/perfil/">Perfil</a>
 
                 {{ if or (eq .usuario.Cargo "instrutor") (eq .usuario.Cargo "admin") }}
                 <a href="/professor/cursos" class="btn-destaque">Página do Professor</a>
@@ -204,6 +204,12 @@
 
     {{ else if eq .page "ver_curso_aluno" }}
     {{ template "ver_curso_aluno" . }}
+
+    {{ else if eq .page "meus_cursos" }}
+    {{ template "meus_cursos" . }}
+
+    {{ else if eq .page "perfil" }}
+    {{ template "perfil" . }}
 
     {{ else }}
     <div class="container">

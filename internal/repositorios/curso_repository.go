@@ -55,3 +55,15 @@ func ObterStatsProfessor(instrutorID uint) (StatsProfessor, error) {
 
 	return stats, err
 }
+
+func BuscarCursosMatriculados(usuarioID uint) ([]models.Curso, error) {
+	var cursos []models.Curso
+
+	err := database.DB.Table("cursos").
+		Joins("JOIN matriculas ON matriculas.curso_id = cursos.id").
+		Preload("Instrutor").
+		Where("matriculas.usuario_id = ? AND matriculas.deleted_at IS NULL", usuarioID).
+		Find(&cursos).Error
+
+	return cursos, err
+}

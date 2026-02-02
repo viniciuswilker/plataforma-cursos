@@ -20,7 +20,9 @@ func RegistrarRotasWeb(router *gin.Engine) {
 	{
 		privado.GET("/feed/", handlers.ExibirFeed)
 		privado.GET("/cursos/:id/", handlers.ExibirDetalhesCurso)
+		privado.GET("/cursos/meus-cursos/", handlers.ExibirMeusCursos)
 		privado.GET("/cursos/:id/assistir", handlers.AssistirCurso)
+		privado.GET("/perfil/", handlers.ExibirPerfil)
 
 		professor := privado.Group("/professor/cursos")
 		professor.Use(middlewares.Autorizar("instrutor", "admin"))

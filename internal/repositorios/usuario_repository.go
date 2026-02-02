@@ -21,3 +21,16 @@ func BuscarPorID(id interface{}) (*models.Usuario, error) {
 	err := database.DB.First(&usuario, id).Error
 	return &usuario, err
 }
+
+func ObterResumoPerfil(usuarioID uint) (models.Usuario, int64, error) {
+	var usuario models.Usuario
+	var totalCursos int64
+
+	if err := database.DB.First(&usuario, usuarioID).Error; err != nil {
+		return usuario, 0, err
+	}
+
+	database.DB.Model(&models.Matricula{}).Where("usuario_id = ?", usuarioID).Count(&totalCursos)
+
+	return usuario, totalCursos, nil
+}
