@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/viniciuswilker/plataforma-cursos/internal/database"
+	"github.com/viniciuswilker/plataforma-cursos/internal/models"
 	"github.com/viniciuswilker/plataforma-cursos/internal/repositorios"
 	"github.com/viniciuswilker/plataforma-cursos/internal/services"
 )
@@ -85,5 +87,40 @@ func PaginaProfessor(c *gin.Context) {
 		"page":    "professor",
 		"usuario": usuario,
 		"cursos":  cursos,
+	})
+}
+
+func ExibirEdicaoCurso(c *gin.Context) {
+	cursoID := c.Param("id")
+	idRaw, _ := c.Get("usuarioID")
+
+	var instrutorID uint
+	if val, ok := idRaw.(float64); ok {
+		instrutorID = uint(val)
+	} else {
+		instrutorID = idRaw.(uint)
+	}
+
+	usuario, err := repositorios.BuscarPorID(instrutorID)
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/login")
+		return
+	}
+
+	var curso models.Curso
+	err = database.DB.Preload("Modulos.Aulas").
+		Where("id = ? AND instrutor_id = ?", cursoID, instrutorID).
+		First(&curso).Error
+
+	if err != nil {
+		c.String(http.StatusNotFound, "Curso não encontrado")
+		return
+	}
+
+	c.HTML(http.StatusOK, "layout", gin.H{
+		"title":   "Editando: " + curso.Titulo,
+		"page":    "editar_curso",
+		"usuario": usuario,
+		"curso":   curso,
 	})
 }

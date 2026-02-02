@@ -189,10 +189,17 @@
 
     {{ if eq .page "feed" }}
     {{ template "feed_content" . }}
+
     {{ else if eq .page "professor" }}
     {{ template "professor_content" . }}
+
+    {{ else if eq .page "editar_curso" }}
+    {{ template "curso_edicao" . }}
+
     {{ else }}
-    <p>Página não encontrada ou bloco não definido.</p>
+    <div class="container">
+        <p>Página não encontrada ou bloco não definido. (Page: {{ .page }})</p>
+    </div>
     {{ end }}
 
 

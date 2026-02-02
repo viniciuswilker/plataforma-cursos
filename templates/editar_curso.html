@@ -1,0 +1,372 @@
+{{ define "curso_edicao" }}
+
+<style>
+    :root {
+        --primary: #137fec;
+        --primary-soft: #e7f2fd;
+        --bg-body: #f1f5f9;
+        --card-bg: #ffffff;
+        --text-main: #0f172a;
+        --text-sub: #64748b;
+        --border-color: #e2e8f0;
+        --radius: 12px;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        line-height: 1.5;
+    }
+
+    .container-edicao {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 40px 24px;
+    }
+
+    /* HEADER DA PÁGINA */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .page-header p {
+        color: var(--text-sub);
+        margin: 4px 0 0;
+    }
+
+    /* GRID LAYOUT */
+    .editor-grid {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    /* SIDEBAR CARD */
+    .sidebar-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+        padding: 24px;
+        position: sticky;
+        top: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-card h3 {
+        font-size: 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* CURRICULUM CONTENT */
+    .curriculum-section {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .module-item {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+    .module-item:hover {
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .module-ctrl {
+        padding: 16px 20px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .module-title-input {
+        background: transparent;
+        border: 1px solid transparent;
+        font-weight: 600;
+        font-size: 16px;
+        flex: 1;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .module-title-input:focus {
+        background: #fff;
+        border-color: var(--primary);
+        outline: none;
+    }
+
+    .lessons-container {
+        padding: 12px 20px 20px;
+    }
+
+    .lesson-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 8px;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+    }
+
+    .lesson-row:hover {
+        background: var(--bg-body);
+    }
+
+    .lesson-row input {
+        border: none;
+        background: transparent;
+        outline: none;
+        flex: 1;
+        font-size: 14px;
+    }
+
+    /* BOTÕES CUSTOMIZADOS */
+    .btn-add-lesson {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        background: transparent;
+        border: 1px dashed var(--border-color);
+        border-radius: 8px;
+        color: var(--text-sub);
+        cursor: pointer;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .btn-add-lesson:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-soft);
+    }
+
+    .btn-save-main {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(4px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-box {
+        background: #fff;
+        padding: 32px;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 480px;
+    }
+</style>
+
+<div class="container-edicao">
+    <header class="page-header">
+        <div>
+            <h1>Gerenciador de Currículo</h1>
+            <p>Curso: <strong>{{ .curso.Titulo }}</strong></p>
+        </div>
+        <div class="actions">
+            <button class="btn-save-main" style="width: auto;"
+                onclick="window.location.href='/professor/cursos/'">Voltar ao Painel</button>
+        </div>
+    </header>
+
+    <div class="editor-grid">
+        <aside>
+            <div class="sidebar-card">
+                <h3><span class="material-symbols-outlined">info</span> Info do Curso</h3>
+                <form id="form-curso-info">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label style="font-size: 13px; font-weight: 600; color: var(--text-sub);">Título</label>
+                        <input type="text" name="titulo" value="{{ .curso.Titulo }}"
+                            style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="font-size: 13px; font-weight: 600; color: var(--text-sub);">Descrição</label>
+                        <textarea name="descricao" rows="4"
+                            style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">{{ .curso.Descricao }}</textarea>
+                    </div>
+                    <button type="button" class="btn-save-main">Atualizar Informações</button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="curriculum-section">
+            {{ range .curso.Modulos }}
+            <article class="module-item">
+                <div class="module-ctrl">
+                    <span class="material-symbols-outlined" style="color: #cbd5e1; cursor: grab;">drag_indicator</span>
+                    <input type="text" class="module-title-input" value="{{ .Titulo }}"
+                        onchange="salvarModulo('{{ .ID }}', this.value)">
+                    <button class="btn-icon" style="background:none; border:none; color: #ef4444; cursor:pointer;"><span
+                            class="material-symbols-outlined">delete</span></button>
+                </div>
+
+                <div class="lessons-container">
+                    {{ range .Aulas }}
+                    <div class="lesson-row">
+                        <span class="material-symbols-outlined"
+                            style="font-size: 20px; color: var(--primary);">description</span>
+                        <input type="text" value="{{ .Titulo }}" readonly
+                            onchange="salvarAula('{{ .ID }}', this.value)">
+                    </div>
+                    {{ end }}
+
+                    <button class="btn-add-lesson" onclick="abrirModalAula('{{ .ID }}')">
+                        <span class="material-symbols-outlined"
+                            style="vertical-align: middle; font-size: 18px;">add</span> Adicionar Aula
+                    </button>
+                </div>
+            </article>
+            {{ else }}
+            <div
+                style="text-align:center; padding: 60px; background:#fff; border-radius: var(--radius); border: 2px dashed var(--border-color);">
+                <p style="color: var(--text-sub);">Nenhum módulo cadastrado.</p>
+            </div>
+            {{ end }}
+
+            <button class="btn-add-lesson"
+                style="border-style: solid; background: #fff; color: var(--primary); border-color: var(--primary); height: 50px; font-weight: 700;"
+                onclick="abrirModalModulo()">
+                + Criar Novo Módulo
+            </button>
+        </main>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="modal-modulo">
+    <div class="modal-box">
+        <h2 style="margin-top:0;">Novo Módulo</h2>
+        <div class="form-group" style="margin: 20px 0;">
+            <input type="text" id="input-nome-modulo" placeholder="Nome do Módulo (ex: Fundamentos)"
+                style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:8px;">
+        </div>
+        <div style="display:flex; gap:12px;">
+            <button class="btn-add-lesson" style="margin:0; flex:1; border-style:solid;"
+                onclick="fecharModalModulo()">Cancelar</button>
+            <button class="btn-save-main" style="flex:1;" onclick="confirmarNovoModulo()">Criar Módulo</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-backdrop" id="modal-aula">
+    <div class="modal-box">
+        <h2>Nova Aula</h2>
+        <form id="form-aula" enctype="multipart/form-data">
+            <input type="hidden" id="input-aula-modulo-id">
+
+            <div class="form-group" style="margin: 15px 0;">
+                <label>Título da Aula</label>
+                <input type="text" id="aula-titulo" name="titulo" required
+                    style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:8px;">
+            </div>
+
+            <div class="form-group" style="margin: 15px 0;">
+                <label>Vídeo da Aula (MP4)</label>
+                <input type="file" id="aula-video" name="video" accept="video/*" style="width:100%;">
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button type="button" class="btn-add-lesson" style="margin:0; flex:1; border-style:solid;"
+                    onclick="fecharModalAula()">Cancelar</button>
+                <button type="submit" class="btn-save-main" style="flex:1;">Salvar Aula</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    const cursoID = "{{ .curso.ID }}";
+
+    function abrirModalModulo() { document.getElementById('modal-modulo').style.display = 'flex'; }
+    function fecharModalModulo() { document.getElementById('modal-modulo').style.display = 'none'; }
+
+    async function confirmarNovoModulo() {
+        const titulo = document.getElementById('input-nome-modulo').value;
+        if (!titulo) return;
+
+        const res = await fetch('/api/professor/modulos/criar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ curso_id: parseInt(cursoID), titulo: titulo })
+        });
+
+        if (res.ok) window.location.reload();
+    }
+</script>
+
+
+
+<script>
+    function abrirModalAula(moduloID) {
+        document.getElementById('input-aula-modulo-id').value = moduloID;
+        document.getElementById('modal-aula').style.display = 'flex';
+    }
+
+    function fecharModalAula() {
+        document.getElementById('modal-aula').style.display = 'none';
+    }
+
+    document.getElementById('form-aula').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.innerText = "Enviando...";
+
+        const formData = new FormData();
+        formData.append('modulo_id', document.getElementById('input-aula-modulo-id').value);
+        formData.append('titulo', document.getElementById('aula-titulo').value);
+        formData.append('video', document.getElementById('aula-video').files[0]);
+
+        const res = await fetch('/api/professor/aulas/criar', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (res.ok) window.location.reload();
+        else alert("Erro ao criar aula");
+    });
+</script>
+{{ end }}

@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/viniciuswilker/plataforma-cursos/internal/database"
@@ -61,4 +63,81 @@ func ListarCursos(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, cursos)
+}
+
+func CriarModulo(c *gin.Context) {
+	idRaw, _ := c.Get("usuarioID")
+	var instrutorID uint
+	if val, ok := idRaw.(float64); ok {
+		instrutorID = uint(val)
+	} else {
+		instrutorID = idRaw.(uint)
+	}
+
+	var input struct {
+		CursoID uint   `json:"curso_id" binding:"required"`
+		Titulo  string `json:"titulo" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
+		return
+	}
+
+	var curso models.Curso
+	if err := database.DB.Where("id = ? AND instrutor_id = ?", input.CursoID, instrutorID).First(&curso).Error; err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Você não tem permissão para alterar este curso"})
+		return
+	}
+
+	novoModulo := models.Modulo{
+		CursoID: input.CursoID,
+		Titulo:  input.Titulo,
+		Ordem:   0,
+	}
+
+	if err := database.DB.Create(&novoModulo).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar módulo"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, novoModulo)
+}
+
+func CriarAula(c *gin.Context) {
+
+	idRaw, _ := c.Get("usuarioID")
+	instrutorID := uint(idRaw.(float64))
+
+	moduloID, _ := strconv.ParseUint(c.PostForm("modulo_id"), 10, 32)
+	titulo := c.PostForm("titulo")
+
+	var modulo models.Modulo
+	err := database.DB.Joins("JOIN cursos ON cursos.id = modulos.curso_id").
+		Where("modulos.id = ? AND cursos.instrutor_id = ?", uint(moduloID), instrutorID).
+		First(&modulo).Error
+
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Acesso negado ao módulo"})
+		return
+	}
+
+	videoPath := ""
+	file, err := c.FormFile("video")
+	if err == nil {
+		videoPath = "uploads/videos/" + strconv.FormatInt(time.Now().Unix(), 10) + "_" + file.Filename
+		if err := c.SaveUploadedFile(file, videoPath); err != nil {
+			c.JSON(500, gin.H{"error": "Falha ao salvar vídeo"})
+			return
+		}
+	}
+
+	aula := models.Aula{
+		ModuloID: uint(moduloID),
+		Titulo:   titulo,
+		VideoURL: videoPath,
+	}
+
+	database.DB.Create(&aula)
+	c.JSON(http.StatusCreated, aula)
 }

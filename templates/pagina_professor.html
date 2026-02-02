@@ -120,7 +120,7 @@
     }
 
     .course-footer {
-        margin-top: auto;
+        margin-top: 10px;
         padding-top: 16px;
         border-top: 1px solid #e5e7eb;
     }
@@ -130,11 +130,12 @@
         padding: 12px;
         border-radius: 12px;
         border: none;
-        background: #f1f5f9;
+        background: #137fec;
         color: #0f172a;
         font-weight: 600;
         cursor: pointer;
         transition: background .25s, color .25s;
+        top: 10px;
     }
 
     .course-footer button:hover {
@@ -309,7 +310,7 @@
             <h3>{{ .Titulo }}</h3>
 
             <div class="course-info">
-                <span>👤 0 alunos</span> <span>⭐ 5.0</span>
+                <span>👤 {{ .TotalAlunos }} alunos</span> <span>⭐ 5.0</span>
             </div>
 
             <div class="course-footer">

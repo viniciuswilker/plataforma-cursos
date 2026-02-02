@@ -20,6 +20,8 @@ func RegistrarRotasAPI(router *gin.Engine) {
 	professor.Use(middlewares.Autorizar("instrutor", "admin"))
 	{
 		professor.POST("/cursos/criar", handlers.CriarCurso)
+		professor.POST("/modulos/criar", handlers.CriarModulo)
+		professor.POST("/aulas/criar", handlers.CriarAula)
 	}
 
 	{
