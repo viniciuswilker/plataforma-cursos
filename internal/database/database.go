@@ -3,6 +3,7 @@ package database
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/glebarez/sqlite"
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
@@ -18,10 +19,14 @@ func Conectar() {
 
 	dsn := os.Getenv("DATABASE_URL")
 
-	if dsn == "" {
-		dialector = sqlite.Open("data/database.db")
-	} else {
+	if strings.HasPrefix(dsn, "postgres://") || strings.HasPrefix(dsn, "postgresql://") {
 		dialector = postgres.Open(dsn)
+	} else {
+
+		if dsn == "" {
+			dsn = "data/database.db"
+		}
+		dialector = sqlite.Open(dsn)
 	}
 
 	DB, err = gorm.Open(dialector, &gorm.Config{})
@@ -29,6 +34,7 @@ func Conectar() {
 		log.Fatal("Erro ao conectar ao banco:", err)
 	}
 
+	log.Println("Banco de dados conectado com sucesso!")
 	DB.AutoMigrate(
 		&models.Usuario{},
 		&models.Curso{},
