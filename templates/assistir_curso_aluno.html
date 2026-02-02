@@ -1,241 +1,302 @@
 {{ define "ver_curso_aluno" }}
 <style>
     :root {
-        --player-bg: #0f172a;
-        --sidebar-bg: #ffffff;
-        --primary: #137fec;
-        --text-main: #1e293b;
-        --text-muted: #64748b;
-        --border: #e2e8f0;
+        --vwp-primary: #137fec;
+        --vwp-accent: #10b981;
+        --vwp-dark-blue: #0f172a;
+        --vwp-glass: rgba(255, 255, 255, 0.05);
+        --vwp-border-white: rgba(255, 255, 255, 0.1);
     }
 
-    .player-layout {
+    .vwp-master-wrapper {
         display: grid;
-        grid-template-columns: 1fr 380px;
-        height: calc(100vh - 64px);
-        /* Altura total menos o header */
-        background: var(--player-bg);
+        grid-template-columns: 1fr 400px;
+        height: 85vh;
+        min-height: 600px;
+        background: linear-gradient(145deg, #0f172a 0%, #137fec 100%);
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        overflow: hidden;
     }
 
-    /* ÁREA DO VÍDEO */
-    .main-content {
-        padding: 40px;
-        overflow-y: auto;
+    .vwp-main-zone {
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        overflow-y: auto;
+        padding: 40px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--vwp-border-white) transparent;
     }
 
-    .video-container {
+    .vwp-video-box {
         width: 100%;
+        max-width: 1080px;
+        margin: 0 auto;
         aspect-ratio: 16 / 9;
         background: #000;
-        border-radius: 16px;
+        border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
     }
 
-    video {
+    .vwp-video-box video {
         width: 100%;
         height: 100%;
+        object-fit: contain;
     }
 
-    .lesson-header {
+    .vwp-content-info {
+        max-width: 1080px;
+        margin: 32px auto 0;
+        width: 100%;
+        color: #ffffff;
+    }
+
+    .vwp-header-flex {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        color: #fff;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--vwp-border-white);
     }
 
-    .lesson-header h1 {
-        font-size: 24px;
-        margin: 0;
+    .vwp-title-group h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
     }
 
-    .lesson-header p {
-        color: var(--text-muted);
+    .vwp-title-group p {
+        color: rgba(255, 255, 255, 0.6);
         margin-top: 4px;
+        font-size: 0.95rem;
     }
 
-    /* BARRA DE AÇÕES (CONCLUIR) */
-    .action-bar {
-        background: #1e293b;
-        padding: 20px;
-        border-radius: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .btn-complete {
-        background: #10b981;
+    .vwp-btn-complete {
+        background: var(--vwp-accent);
         color: white;
         border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
+        padding: 14px 24px;
+        border-radius: 12px;
         font-weight: 700;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
-        transition: 0.3s;
+        gap: 10px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);
     }
 
-    .btn-complete:hover {
+    .vwp-btn-complete:hover:not(:disabled) {
+        transform: translateY(-2px);
         background: #059669;
-        transform: scale(1.02);
+        box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.5);
     }
 
-    .btn-complete.done {
-        background: #334155;
+    .vwp-btn-complete.vwp-is-done {
+        background: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.8);
+        box-shadow: none;
         cursor: default;
     }
 
-    /* PLAYLIST LATERAL */
-    .sidebar {
-        background: var(--sidebar-bg);
-        border-left: 1px solid var(--border);
+    .vwp-materials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+    .vwp-file-card {
+        background: var(--vwp-glass);
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--vwp-border-white);
+        padding: 16px;
+        border-radius: 14px;
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: 0.2s ease;
+    }
+
+    .vwp-file-card:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: #fff;
+    }
+
+    .vwp-playlist-sidebar {
+        background: #ffffff;
+        border-left: 1px solid #e2e8f0;
         display: flex;
         flex-direction: column;
         overflow-y: auto;
     }
 
-    .sidebar-title {
+    .vwp-sidebar-top {
         padding: 24px;
-        border-bottom: 1px solid var(--border);
-        font-weight: 800;
-        font-size: 18px;
+        border-bottom: 1px solid #f1f5f9;
+        background: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 5;
     }
 
-    .module-item {
-        border-bottom: 1px solid var(--border);
-    }
-
-    .module-name {
+    .vwp-module-header {
         padding: 12px 24px;
         background: #f8fafc;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-muted);
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #64748b;
         text-transform: uppercase;
+        letter-spacing: 0.1em;
     }
 
-    .lesson-link {
-        padding: 16px 24px;
+    .vwp-lesson-row {
+        padding: 18px 24px;
         display: flex;
         align-items: center;
         gap: 12px;
-        color: var(--text-main);
+        color: #1e293b;
         text-decoration: none;
-        font-size: 14px;
+        font-size: 0.95rem;
         transition: 0.2s;
         border-left: 4px solid transparent;
     }
 
-    .lesson-link:hover {
-        background: #f1f5f9;
+    .vwp-lesson-row:hover {
+        background: #f8fafc;
+        color: var(--vwp-primary);
     }
 
-    .lesson-link.active {
-        background: #eff6ff;
-        color: var(--primary);
-        border-left-color: var(--primary);
+    .vwp-lesson-row.vwp-active {
+        background: #f0f7ff;
+        color: var(--vwp-primary);
+        border-left-color: var(--vwp-primary);
         font-weight: 600;
     }
 
-    /* MATERIAIS */
-    .materials-box {
-        margin-top: 20px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 12px;
-    }
+    @media (max-width: 1100px) {
+        .vwp-master-wrapper {
+            grid-template-columns: 1fr;
+            height: auto;
+            overflow: visible;
+        }
 
-    .material-item {
-        background: #1e293b;
-        padding: 12px;
-        border-radius: 8px;
-        color: #fff;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 13px;
+        .vwp-playlist-sidebar {
+            height: 450px;
+            border-left: none;
+            border-top: 1px solid #e2e8f0;
+        }
     }
 </style>
 
-<div class="player-layout">
-    <main class="main-content">
-        <div class="video-container">
+<div class="vwp-master-wrapper">
+    <main class="vwp-main-zone">
+        <div class="vwp-video-box">
             {{ if .aulaAtual.VideoURL }}
-            <video id="player" controls src="/{{ .aulaAtual.VideoURL }}" controlsList="nodownload"></video>
+            <video id="vwp-video-element" controls src="/{{ .aulaAtual.VideoURL }}" controlsList="nodownload"></video>
             {{ else }}
-            <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#94a3b8;">
-                Sem vídeo disponível para esta aula.
+            <div
+                style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,0.3);">
+                <span class="material-symbols-outlined" style="font-size: 60px;">movie_off</span>
+                <p>Nenhum vídeo disponível</p>
             </div>
             {{ end }}
         </div>
 
-        <div class="lesson-header">
-            <div>
-                <h1>{{ .aulaAtual.Titulo }}</h1>
-                <p>Curso: {{ .curso.Titulo }}</p>
+        <div class="vwp-content-info">
+            <header class="vwp-header-flex">
+                <div class="vwp-title-group">
+                    <h1>{{ .aulaAtual.Titulo }}</h1>
+                    <p>{{ .curso.Titulo }} • {{ .moduloAtual.Titulo }}</p>
+                </div>
+
+                <button class="vwp-btn-complete {{ if .concluida }}vwp-is-done{{ end }}" id="vwp-mark-btn" {{ if
+                    .concluida }}disabled{{ end }} onclick="vwpToggleProgress('{{ .aulaAtual.ID }}')">
+                    <span class="material-symbols-outlined">{{ if .concluida }}verified{{ else }}check_circle{{ end
+                        }}</span>
+                    {{ if .concluida }}Concluída{{ else }}Concluir Aula{{ end }}
+                </button>
+            </header>
+
+            {{ if .aulaAtual.Materiais }}
+            <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--vwp-border-white);">
+                <h3
+                    style="display:flex; align-items:center; gap:10px; font-size:1.2rem; color: #fff; margin-bottom: 20px;">
+                    <span class="material-symbols-outlined" style="color: var(--vwp-accent);">inventory_2</span>
+                    Materiais de Apoio e PDFs
+                </h3>
+
+                <div class="vwp-materials-grid">
+                    {{ range .aulaAtual.Materiais }}
+                    <a href="/{{ .ArquivoURL }}" target="_blank" class="vwp-file-card" title="Clique para baixar">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div
+                                style="background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px; display: flex;">
+                                <span class="material-symbols-outlined" style="font-size: 24px;">picture_as_pdf</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-weight: 600; font-size: 0.95rem;">{{ .Nome }}</span>
+                                <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Download
+                                    Disponível</span>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined"
+                            style="font-size: 18px; color: rgba(255,255,255,0.3);">download</span>
+                    </a>
+                    {{ end }}
+                </div>
             </div>
-
-            <button class="btn-complete" id="btn-check" onclick="concluirAula('{{ .aulaAtual.ID }}')">
-                <span class="material-symbols-outlined">check_circle</span>
-                Marcar como concluída
-            </button>
-        </div>
-
-        {{ if .aulaAtual.Materiais }}
-        <div class="materials-box">
-            {{ range .aulaAtual.Materiais }}
-            <a href="/{{ .ArquivoURL }}" target="_blank" class="material-item">
-                <span class="material-symbols-outlined">description</span>
-                {{ .Nome }}
-            </a>
+            {{ else }}
+            <div
+                style="margin-top: 40px; padding: 20px; border-radius: 12px; border: 1px dashed var(--vwp-border-white); text-align: center;">
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem;">Nenhum material extra disponível para esta
+                    aula.</p>
+            </div>
             {{ end }}
         </div>
-        {{ end }}
     </main>
 
-    <aside class="sidebar">
-        <div class="sidebar-title">Conteúdo do Curso</div>
+    <aside class="vwp-playlist-sidebar">
+        <div class="vwp-sidebar-top">
+            <h2 style="font-size: 1.1rem; font-weight: 700;">Grade do Curso</h2>
+            <p style="font-size: 0.85rem; color: #64748b;">{{ .totalAulas }} aulas disponíveis</p>
+        </div>
+
         <nav>
             {{ range .curso.Modulos }}
-            <div class="module-item">
-                <div class="module-name">{{ .Titulo }}</div>
-                {{ range .Aulas }}
-                <a href="?aula={{ .ID }}" class="lesson-link {{ if eq $.aulaAtual.ID .ID }}active{{ end }}">
-                    <span class="material-symbols-outlined" style="font-size: 20px;">
-                        {{ if eq $.aulaAtual.ID .ID }}play_circle{{ else }}play_arrow{{ end }}
-                    </span>
-                    {{ .Titulo }}
-                </a>
-                {{ end }}
-            </div>
+            <div class="vwp-module-header">{{ .Titulo }}</div>
+            {{ range .Aulas }}
+            <a href="?aula={{ .ID }}" class="vwp-lesson-row {{ if eq $.aulaAtual.ID .ID }}vwp-active{{ end }}">
+                <span class="material-symbols-outlined" style="font-size: 20px;">
+                    {{ if eq $.aulaAtual.ID .ID }}play_circle{{ else }}play_arrow{{ end }}
+                </span>
+                {{ .Titulo }}
+            </a>
+            {{ end }}
             {{ end }}
         </nav>
     </aside>
 </div>
 
-
-
 <script>
-    async function concluirAula(aulaID) {
-        const btn = document.getElementById('btn-check');
-        btn.innerHTML = "Processando...";
+    async function vwpToggleProgress(id) {
+        const b = document.getElementById('vwp-mark-btn');
+        const oldText = b.innerHTML;
+        b.innerHTML = "Salvando...";
 
-        const res = await fetch(`/api/aulas/${aulaID}/concluir`, { method: 'POST' });
-
-        if (res.ok) {
-            btn.classList.add('done');
-            btn.innerHTML = '<span class="material-symbols-outlined">verified</span> Aula Concluída';
-            btn.disabled = true;
-        } else {
-            alert("Erro ao salvar progresso.");
-            btn.innerHTML = "Marcar como concluída";
+        try {
+            const r = await fetch(`/api/aulas/${id}/concluir`, { method: 'POST' });
+            if (r.ok) {
+                b.classList.add('vwp-is-done');
+                b.disabled = true;
+                b.innerHTML = '<span class="material-symbols-outlined">verified</span> Concluída';
+            } else { throw new Error(); }
+        } catch (e) {
+            alert("Erro na conexão");
+            b.innerHTML = oldText;
         }
     }
 </script>

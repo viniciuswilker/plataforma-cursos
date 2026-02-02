@@ -272,7 +272,7 @@
             <nav class="nav">
                 <a href="/feed/" class="{{ if eq .page " feed" }}active{{ end }}">Início</a>
                 <a href="/cursos/meus-cursos/" class="{{ if eq .page " meus_cursos" }}active{{ end }}">Meus cursos</a>
-                <a href="/perfil/" class="{{ if eq .page " perfil" }}active{{ end }}">Perfil</a>
+                <!-- <a href="/perfil/" class="{{ if eq .page " perfil" }}active{{ end }}">Perfil</a> -->
 
                 {{ if or (eq .usuario.Cargo "instrutor") (eq .usuario.Cargo "admin") }}
                 <a href="/professor/cursos" class="btn-professor">Painel Instrutor</a>
