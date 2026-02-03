@@ -7,6 +7,11 @@ import (
 )
 
 func RegistrarRotasAPI(router *gin.Engine) {
+	
+	router.GET("/healthcheck", func(c *gin.Context) {
+		c.String(200, "OK")
+	})
+
 	auth := router.Group("/auth")
 	{
 		auth.POST("/cadastro", handlers.Cadastrar)

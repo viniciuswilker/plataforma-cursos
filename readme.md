@@ -2,35 +2,34 @@
 O EduStream é uma aplicação Full Stack de streaming de vídeo educacional desenvolvida em Go (Golang). O projeto foi desenhado seguindo princípios de arquitetura limpa e conteinerização, garantindo que a aplicação seja escalável e fácil de implantar em qualquer ambiente de nuvem.
 
 🛠️ Tecnologias Utilizadas
-Backend: Go (Golang) com o framework Gin Gonic.
+Backend: Go (Golang) com framework Gin Gonic.
 
-Banco de Dados: PostgreSQL (Produção/Render) e SQLite (Desenvolvimento).
+Banco de Dados: PostgreSQL (Produção no Render) e SQLite (Desenvolvimento).
 
-ORM: GORM para abstração de banco de dados e migrações automáticas.
+ORM: GORM para abstração de dados e migrações automáticas.
 
-Frontend: HTML5, CSS3 e JavaScript.
+Storage de Mídia: Cloudinary (Armazenamento de vídeos na nuvem).
 
-Infraestrutura: Docker e Docker Compose para isolamento de ambiente.
+Frontend: HTML5, CSS3, JavaScript e Google Material Symbols.
 
-Deploy: Render (CI/CD via GitHub).
+Autenticação: JWT (JSON Web Tokens) com Cookies HttpOnly.
+
+Infraestrutura: Docker & Docker Compose.
 
 Autenticação: JWT (JSON Web Tokens) com armazenamento seguro em Cookies HttpOnly.
 
 ✨ Funcionalidades Principais
-Autenticação Robusta: Sistema de login e cadastro com diferenciação de cargos (Admin/Professor/Aluno).
+Gestão de Cursos (Slugs): URLs amigáveis para melhor SEO e navegação.
 
-Filtro de Conteúdo: Barra de busca dinâmica que realiza queries LIKE no banco de dados para encontrar cursos em tempo real.
+Streaming na Nuvem: Integração com Cloudinary para entrega de vídeos escalável e persistente.
 
-Arquitetura Multi-Ambiente: Configuração inteligente que alterna entre SQLite e PostgreSQL dependendo do ambiente (local ou cloud).
+Sistema de Progresso: Acompanhamento de aulas concluídas e visualização de barra de progresso em tempo real.
 
-Streaming de Vídeo: Upload e entrega de vídeos otimizada através de rotas estáticas do Gin.
+Emissão de Certificados: Geração dinâmica de certificados de conclusão após atingir 100% do curso.
 
-Middleware de Autorização: Proteção de rotas que redireciona usuários não autenticados e bloqueia acessos indevidos conforme o cargo.
+Autenticação Hierárquica: Níveis de acesso distintos para Alunos, Professores e Administradores.
 
-Como rodar o projeto (Docker)
-Certifique-se de ter o Docker instalado e execute:
 
-Bash
 
 # Clone o repositório
 git clone https://github.com/viniciuswilker/plataforma-cursos.git
