@@ -248,11 +248,11 @@ func AssistirCursoAdm(c *gin.Context) {
 		"usuario":   usuario,
 	})
 }
+
 func MatricularAluno(c *gin.Context) {
 	slug := c.Param("slug")
 	idRaw, _ := c.Get("usuarioID")
 
-	// Casting robusto do ID do Usuário
 	var alunoID uint
 	switch v := idRaw.(type) {
 	case float64:
@@ -270,23 +270,19 @@ func MatricularAluno(c *gin.Context) {
 		return
 	}
 
-	// Criar a matrícula usando o ID real do curso que achamos pelo slug
 	novaMatricula := models.Matricula{
 		CursoID:   curso.ID,
 		UsuarioID: alunoID,
 	}
 
-	// Usamos Clauses(clause.OnConflict{DoNothing: true}) para evitar erro de duplicidade
 	if err := database.DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&novaMatricula).Error; err != nil {
-		fmt.Println("Erro ao criar matrícula:", err) // Veja o erro no seu terminal!
+		fmt.Println("Erro ao criar matrícula:", err)
 		c.JSON(500, gin.H{"error": "Erro ao salvar matrícula"})
 		return
 	}
 
-	// Redireciona para a página de assistir
 	c.Redirect(http.StatusSeeOther, "/cursos/"+curso.Slug+"/assistir")
 }
-
 func AssistirCurso(c *gin.Context) {
 	cursoSlug := c.Param("slug")
 	idRaw, _ := c.Get("usuarioID")
@@ -306,18 +302,11 @@ func AssistirCurso(c *gin.Context) {
 
 	aulaSlug := c.Query("aula")
 	var aulaAtual models.Aula
-
 	if aulaSlug != "" {
 		database.DB.Preload("Materiais").Where("slug = ?", aulaSlug).First(&aulaAtual)
 	} else if len(curso.Modulos) > 0 && len(curso.Modulos[0].Aulas) > 0 {
 		aulaAtual = curso.Modulos[0].Aulas[0]
 	}
-
-	var count int64
-	database.DB.Model(&models.ProgressoAula{}).
-		Where("usuario_id = ? AND aula_id = ?", usuarioID, aulaAtual.ID).
-		Count(&count)
-	concluida := count > 0
 
 	concluidasMap := make(map[uint]bool)
 	var aulasConcluidasIDs []uint
@@ -326,16 +315,35 @@ func AssistirCurso(c *gin.Context) {
 		concluidasMap[id] = true
 	}
 
+	totalAulas := 0
+	for _, m := range curso.Modulos {
+		totalAulas += len(m.Aulas)
+	}
+
+	concluidasNesteCurso := 0
+	for _, m := range curso.Modulos {
+		for _, a := range m.Aulas {
+			if concluidasMap[a.ID] {
+				concluidasNesteCurso++
+			}
+		}
+	}
+
+	podeGerarCertificado := totalAulas > 0 && concluidasNesteCurso == totalAulas
+	concluida := concluidasMap[aulaAtual.ID]
+
 	usuario, _ := repositorios.BuscarPorID(usuarioID)
 
 	c.HTML(http.StatusOK, "layout", gin.H{
-		"title":         "Assistindo: " + curso.Titulo,
-		"page":          "ver_curso_aluno",
-		"curso":         curso,
-		"aulaAtual":     aulaAtual,
-		"usuario":       usuario,
-		"concluida":     concluida,
-		"concluidasMap": concluidasMap,
+		"title":                "Assistindo: " + curso.Titulo,
+		"page":                 "ver_curso_aluno",
+		"curso":                curso,
+		"aulaAtual":            aulaAtual,
+		"usuario":              usuario,
+		"concluida":            concluida,
+		"concluidasMap":        concluidasMap,
+		"podeGerarCertificado": podeGerarCertificado,
+		"totalAulas":           totalAulas,
 	})
 }
 

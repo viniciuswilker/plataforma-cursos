@@ -190,6 +190,59 @@
             border-top: 1px solid #e2e8f0;
         }
     }
+
+    .vwp-cert-card {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 1px solid #f59e0b;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1);
+        width: 330px;
+        flex-direction: row;
+    }
+
+    .vwp-cert-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .vwp-cert-header span {
+        color: #f59e0b;
+        font-size: 20px;
+    }
+
+    .vwp-cert-header p {
+        color: #92400e;
+        font-weight: 700;
+        font-size: 0.8rem;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .vwp-cert-btn {
+        background: #f59e0b;
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 8px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .vwp-cert-btn:hover {
+        background: #d97706;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    }
 </style>
 
 <div class="vwp-master-wrapper">
@@ -267,6 +320,18 @@
             <h2 style="font-size: 1.1rem; font-weight: 700;">Grade do Curso</h2>
             <p style="font-size: 0.85rem; color: #64748b;">{{ .totalAulas }} aulas disponíveis</p>
         </div>
+
+        {{ if .podeGerarCertificado }}
+        <div class="vwp-cert-card">
+            <div class="vwp-cert-header">
+                <span class="material-symbols-outlined">workspace_premium</span>
+                <!-- <p>Curso Concluído!</p> -->
+            </div>
+            <a href="/cursos/{{ .curso.Slug }}/certificado" class="vwp-cert-btn">
+                EMITIR CERTIFICADO
+            </a>
+        </div>
+        {{ end }}
 
         <nav>
             {{ range .curso.Modulos }}

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/viniciuswilker/plataforma-cursos/internal/database"
@@ -282,4 +283,48 @@ func ExibirPerfil(c *gin.Context) {
 		"usuario":     usuario,
 		"totalCursos": total,
 	})
+}
+
+func GerarCertificado(c *gin.Context) {
+	cursoSlug := c.Param("slug")
+	idRaw, _ := c.Get("usuarioID")
+	usuarioID := uint(idRaw.(float64))
+
+	var curso models.Curso
+	if err := database.DB.Preload("Modulos.Aulas").Where("slug = ?", cursoSlug).First(&curso).Error; err != nil {
+		c.Redirect(http.StatusSeeOther, "/feed/")
+		return
+	}
+
+	var matricula models.Matricula
+	if err := database.DB.Where("curso_id = ? AND usuario_id = ? ", curso.ID, usuarioID).First(&matricula).Error; err != nil {
+		c.String(http.StatusForbidden, "Você não está matriculado nesse curso.")
+		return
+	}
+
+	var aulasConcluidasCount int64
+	database.DB.Model(&models.ProgressoAula{}).
+		Joins("JOIN aulas ON aulas.id = progresso_aulas.aula_id").
+		Joins("JOIN modulos ON modulos.id = aulas.modulo_id").
+		Where("modulos.curso_id = ? AND progresso_aulas.usuario_id = ?", curso.ID, usuarioID).
+		Count(&aulasConcluidasCount)
+
+	totalAulas := 0
+	for _, m := range curso.Modulos {
+		totalAulas += len(m.Aulas)
+	}
+
+	if totalAulas == 0 || int(aulasConcluidasCount) < totalAulas {
+		c.String(http.StatusForbidden, "Conclua todas as aulas antes de gerar o certificado.")
+		return
+	}
+
+	usuario, _ := repositorios.BuscarPorID(usuarioID)
+
+	c.HTML(http.StatusOK, "certificado.html", gin.H{
+		"usuario": usuario,
+		"curso":   curso,
+		"data":    time.Now().Format("02/01/2006"),
+	})
+
 }
