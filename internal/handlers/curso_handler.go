@@ -248,42 +248,42 @@ func AssistirCursoAdm(c *gin.Context) {
 		"usuario":   usuario,
 	})
 }
-
 func MatricularAluno(c *gin.Context) {
 	slug := c.Param("slug")
 	idRaw, _ := c.Get("usuarioID")
 
+	// Casting robusto do ID do Usuário
 	var alunoID uint
-	if val, ok := idRaw.(float64); ok {
-		alunoID = uint(val)
-	} else {
-		alunoID = idRaw.(uint)
+	switch v := idRaw.(type) {
+	case float64:
+		alunoID = uint(v)
+	case uint:
+		alunoID = v
+	default:
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Sessão inválida"})
+		return
 	}
 
 	var curso models.Curso
 	if err := database.DB.Where("slug = ?", slug).First(&curso).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Curso não encontrado"})
+		c.JSON(404, gin.H{"error": "Curso não encontrado"})
 		return
 	}
 
-	var matriculaExistente models.Matricula
-	err := database.DB.Where("curso_id = ? AND usuario_id = ?", curso.ID, alunoID).First(&matriculaExistente).Error
-
-	if err == nil {
-		c.Redirect(http.StatusSeeOther, "/cursos/"+curso.Slug+"/assistir")
-		return
-	}
-
+	// Criar a matrícula usando o ID real do curso que achamos pelo slug
 	novaMatricula := models.Matricula{
 		CursoID:   curso.ID,
 		UsuarioID: alunoID,
 	}
 
-	if err := database.DB.Create(&novaMatricula).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao realizar matrícula"})
+	// Usamos Clauses(clause.OnConflict{DoNothing: true}) para evitar erro de duplicidade
+	if err := database.DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&novaMatricula).Error; err != nil {
+		fmt.Println("Erro ao criar matrícula:", err) // Veja o erro no seu terminal!
+		c.JSON(500, gin.H{"error": "Erro ao salvar matrícula"})
 		return
 	}
 
+	// Redireciona para a página de assistir
 	c.Redirect(http.StatusSeeOther, "/cursos/"+curso.Slug+"/assistir")
 }
 

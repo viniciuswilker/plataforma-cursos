@@ -171,46 +171,72 @@ func PublicoExibirDetalhesCurso(c *gin.Context) {
 	})
 }
 func ExibirDetalhesCurso(c *gin.Context) {
-	id := c.Param("id")
+	slugParam := c.Param("slug")
 	var curso models.Curso
 
 	err := database.DB.Preload("Instrutor").
+		Preload("Modulos").
 		Preload("Modulos.Aulas").
-		First(&curso, id).Error
+		Where("slug = ?", slugParam).
+		First(&curso).Error
 
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/feed")
 		return
 	}
 
-	idRaw, _ := c.Get("usuarioID")
+	idRaw, logado := c.Get("usuarioID")
 	var usuarioID uint
-	if val, ok := idRaw.(float64); ok {
-		usuarioID = uint(val)
-	} else {
-		usuarioID = idRaw.(uint)
-	}
-
 	var matriculado bool
-	if idRaw != nil {
-		var count int64
+	var porcentagem int
+
+	if logado && idRaw != nil {
+		switch v := idRaw.(type) {
+		case float64:
+			usuarioID = uint(v)
+		case uint:
+			usuarioID = v
+		}
+
+		var countMatricula int64
 		database.DB.Model(&models.Matricula{}).
-			Where("curso_id = ? AND usuario_id = ?", id, idRaw).
-			Count(&count)
-		matriculado = count > 0
+			Where("curso_id = ? AND usuario_id = ?", curso.ID, usuarioID).
+			Count(&countMatricula)
+		matriculado = countMatricula > 0
+
+		if matriculado {
+			totalAulas := 0
+			for _, m := range curso.Modulos {
+				totalAulas += len(m.Aulas)
+			}
+
+			if totalAulas > 0 {
+				var concluidas int64
+				database.DB.Model(&models.ProgressoAula{}).
+					Joins("JOIN aulas ON aulas.id = progresso_aulas.aula_id").
+					Joins("JOIN modulos ON modulos.id = aulas.modulo_id").
+					Where("modulos.curso_id = ? AND progresso_aulas.usuario_id = ?", curso.ID, usuarioID).
+					Count(&concluidas)
+
+				porcentagem = int((float64(concluidas) / float64(totalAulas)) * 100)
+			}
+		}
 	}
 
-	usuario, _ := repositorios.BuscarPorID(usuarioID)
+	var usuario *models.Usuario
+	if usuarioID > 0 {
+		usuario, _ = repositorios.BuscarPorID(usuarioID)
+	}
 
 	c.HTML(http.StatusOK, "layout", gin.H{
-		"matriculado": matriculado,
 		"title":       curso.Titulo,
 		"page":        "conteudo_curso",
 		"curso":       curso,
 		"usuario":     usuario,
+		"matriculado": matriculado,
+		"progresso":   porcentagem,
 	})
 }
-
 func ExibirMeusCursos(c *gin.Context) {
 	idRaw, _ := c.Get("usuarioID")
 	var usuarioID uint
