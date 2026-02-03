@@ -245,6 +245,10 @@
                             style="font-size: 20px; color: var(--primary);">description</span>
                         <input type="text" value="{{ .Titulo }}" readonly
                             onchange="salvarAula('{{ .ID }}', this.value)">
+                        <button class="btn-icon" onclick="excluirAula('{{ .ID }}')"
+                            style="background:none; border:none; color: #ef4444; cursor:pointer;">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
                     </div>
                     {{ end }}
 
@@ -367,6 +371,34 @@
 </script>
 
 <script>
+    async function excluirAula(aulaID) {
+        if (!confirm("Tem certeza que deseja excluir essa aula? Essa ação não pode ser desfeita")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/professor/aulas/${aulaID}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                const data = await response.json();
+                alert(data.erro || data.error || "Erro ao excluir aula");
+            }
+
+        } catch (error) {
+            console.error("Erro:", error);
+            alert("Erro de conexão com o servidor");
+        }
+    }
+
+
+
     async function excluirModulo(moduloID) {
         if (!confirm("Tem certeza que deseja excluir este módulo e TODAS as aulas dentro dele? Esta ação não pode ser desfeita.")) {
             return;

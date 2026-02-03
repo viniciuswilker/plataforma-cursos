@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -164,6 +166,32 @@ func CriarAula(c *gin.Context) {
 
 	database.DB.Create(&aula)
 	c.JSON(http.StatusCreated, aula)
+}
+
+func ExcluirAula(c *gin.Context) {
+
+	id := c.Param("id")
+
+	var aula models.Aula
+	if err := database.DB.First(&aula, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"erro": "Aula não encontrada"})
+		return
+	}
+
+	if aula.VideoURL != "" {
+		if err := os.Remove(aula.VideoURL); err != nil {
+			fmt.Printf("Aviso: não foi possivel deletar o arquivo %s: %v\n", aula.VideoURL, err)
+		}
+	}
+
+	if err := database.DB.Unscoped().Delete(&aula).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"erro": "Erro ao excluir aula"})
+		return
+	}
+
+	fmt.Println("Aula excluida com sucesso")
+	c.JSON(http.StatusOK, gin.H{"mensagem": "Aula e vídeo excluidos com sucesso"})
+
 }
 
 func AssistirCursoAdm(c *gin.Context) {
