@@ -116,7 +116,7 @@
 
     <div class="grid-meus-cursos">
         {{ range .cursos }}
-        <a href="/cursos/{{ .ID }}/assistir" class="my-course-card">
+        <a href="/cursos/{{ .Slug }}/assistir" class="my-course-card">
             <div class="my-course-img" style="background-image: url('{{ .CapaURL }}');"></div>
 
             <div class="my-course-body">

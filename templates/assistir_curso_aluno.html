@@ -272,9 +272,9 @@
             {{ range .curso.Modulos }}
             <div class="vwp-module-header">{{ .Titulo }}</div>
             {{ range .Aulas }}
-            <a href="?aula={{ .ID }}" class="vwp-lesson-row {{ if eq $.aulaAtual.ID .ID }}vwp-active{{ end }}">
+            <a href="?aula={{ .Slug }}" class="vwp-lesson-row {{ if eq $.aulaAtual.Slug .Slug }}vwp-active{{ end }}">
                 <span class="material-symbols-outlined" style="font-size: 20px;">
-                    {{ if eq $.aulaAtual.ID .ID }}play_circle{{ else }}play_arrow{{ end }}
+                    {{ if eq $.aulaAtual.Slug .Slug }}play_circle{{ else }}play_arrow{{ end }}
                 </span>
                 {{ .Titulo }}
             </a>

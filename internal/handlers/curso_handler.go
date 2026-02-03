@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gosimple/slug"
 	"github.com/viniciuswilker/plataforma-cursos/internal/database"
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
 	"github.com/viniciuswilker/plataforma-cursos/internal/repositorios"
@@ -21,14 +22,14 @@ type RequisicaoCurso struct {
 }
 
 func CriarCurso(c *gin.Context) {
-
 	idInterface, _ := c.Get("usuarioID")
 
 	var instrutorID uint
-	if val, ok := idInterface.(float64); ok {
-		instrutorID = uint(val)
-	} else if val, ok := idInterface.(uint); ok {
-		instrutorID = val
+	switch v := idInterface.(type) {
+	case float64:
+		instrutorID = uint(v)
+	case uint:
+		instrutorID = v
 	}
 
 	var input struct {
@@ -42,21 +43,25 @@ func CriarCurso(c *gin.Context) {
 		return
 	}
 
+	cursoSlug := slug.Make(input.Titulo)
+
 	curso := models.Curso{
 		Titulo:      input.Titulo,
+		Slug:        cursoSlug,
 		Descricao:   input.Descricao,
 		CapaURL:     input.CapaURL,
 		InstrutorID: instrutorID,
 	}
 
 	if err := database.DB.Create(&curso).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao salvar no banco"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao salvar no banco ou slug já existente"})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Curso criado com sucesso",
 		"id":      curso.ID,
+		"slug":    curso.Slug,
 	})
 }
 
@@ -132,7 +137,6 @@ func ExcluirModulo(c *gin.Context) {
 }
 
 func CriarAula(c *gin.Context) {
-
 	idRaw, _ := c.Get("usuarioID")
 	instrutorID := uint(idRaw.(float64))
 
@@ -162,10 +166,15 @@ func CriarAula(c *gin.Context) {
 	aula := models.Aula{
 		ModuloID: uint(moduloID),
 		Titulo:   titulo,
+		Slug:     slug.Make(titulo),
 		VideoURL: videoPath,
 	}
 
-	database.DB.Create(&aula)
+	if err := database.DB.Create(&aula).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Erro ao salvar aula (slug duplicado?)"})
+		return
+	}
+
 	c.JSON(http.StatusCreated, aula)
 }
 
@@ -241,7 +250,7 @@ func AssistirCursoAdm(c *gin.Context) {
 }
 
 func MatricularAluno(c *gin.Context) {
-	cursoID := c.Param("id")
+	slug := c.Param("slug")
 	idRaw, _ := c.Get("usuarioID")
 
 	var alunoID uint
@@ -251,16 +260,22 @@ func MatricularAluno(c *gin.Context) {
 		alunoID = idRaw.(uint)
 	}
 
+	var curso models.Curso
+	if err := database.DB.Where("slug = ?", slug).First(&curso).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Curso não encontrado"})
+		return
+	}
+
 	var matriculaExistente models.Matricula
-	err := database.DB.Where("curso_id = ? AND usuario_id = ?", cursoID, alunoID).First(&matriculaExistente).Error
+	err := database.DB.Where("curso_id = ? AND usuario_id = ?", curso.ID, alunoID).First(&matriculaExistente).Error
 
 	if err == nil {
-		c.Redirect(http.StatusSeeOther, "/cursos/"+cursoID+"/assistir")
+		c.Redirect(http.StatusSeeOther, "/cursos/"+curso.Slug+"/assistir")
 		return
 	}
 
 	novaMatricula := models.Matricula{
-		CursoID:   uint(parseID(cursoID)),
+		CursoID:   curso.ID,
 		UsuarioID: alunoID,
 	}
 
@@ -269,29 +284,31 @@ func MatricularAluno(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusSeeOther, "/cursos/"+cursoID+"/assistir")
+	c.Redirect(http.StatusSeeOther, "/cursos/"+curso.Slug+"/assistir")
 }
 
 func AssistirCurso(c *gin.Context) {
-	cursoID := c.Param("id")
+	cursoSlug := c.Param("slug")
 	idRaw, _ := c.Get("usuarioID")
 	usuarioID := uint(idRaw.(float64))
 
-	var matricula models.Matricula
-	if err := database.DB.Where("curso_id = ? AND usuario_id = ?", cursoID, usuarioID).First(&matricula).Error; err != nil {
-		c.Redirect(http.StatusSeeOther, "/preview/curso/"+cursoID)
+	var curso models.Curso
+	if err := database.DB.Preload("Modulos.Aulas.Materiais").Where("slug = ?", cursoSlug).First(&curso).Error; err != nil {
+		c.Redirect(http.StatusSeeOther, "/feed")
 		return
 	}
 
-	usuario, _ := repositorios.BuscarPorID(usuarioID)
+	var matricula models.Matricula
+	if err := database.DB.Where("curso_id = ? AND usuario_id = ?", curso.ID, usuarioID).First(&matricula).Error; err != nil {
+		c.Redirect(http.StatusSeeOther, "/curso/preview/"+curso.Slug)
+		return
+	}
 
-	var curso models.Curso
-	database.DB.Preload("Modulos.Aulas.Materiais").First(&curso, cursoID)
-
-	aulaID := c.Query("aula")
+	aulaSlug := c.Query("aula")
 	var aulaAtual models.Aula
-	if aulaID != "" {
-		database.DB.Preload("Materiais").First(&aulaAtual, aulaID)
+
+	if aulaSlug != "" {
+		database.DB.Preload("Materiais").Where("slug = ?", aulaSlug).First(&aulaAtual)
 	} else if len(curso.Modulos) > 0 && len(curso.Modulos[0].Aulas) > 0 {
 		aulaAtual = curso.Modulos[0].Aulas[0]
 	}
@@ -304,14 +321,12 @@ func AssistirCurso(c *gin.Context) {
 
 	concluidasMap := make(map[uint]bool)
 	var aulasConcluidasIDs []uint
-
-	database.DB.Model(&models.ProgressoAula{}).
-		Where("usuario_id = ?", usuarioID).
-		Pluck("aula_id", &aulasConcluidasIDs)
-
+	database.DB.Model(&models.ProgressoAula{}).Where("usuario_id = ?", usuarioID).Pluck("aula_id", &aulasConcluidasIDs)
 	for _, id := range aulasConcluidasIDs {
 		concluidasMap[id] = true
 	}
+
+	usuario, _ := repositorios.BuscarPorID(usuarioID)
 
 	c.HTML(http.StatusOK, "layout", gin.H{
 		"title":         "Assistindo: " + curso.Titulo,

@@ -20,6 +20,7 @@ type Curso struct {
 	Titulo      string `gorm:"size:200;not null"`
 	Descricao   string `gorm:"type:text"`
 	CapaURL     string
+	Slug        string `gorm:"uniqueIndex"`
 	InstrutorID uint
 	Instrutor   Usuario  `gorm:"foreignKey:InstrutorID"`
 	Modulos     []Modulo `gorm:"constraint:OnDelete:CASCADE;"`
@@ -42,6 +43,7 @@ type Aula struct {
 	Conteudo  string `gorm:"type:text"`
 	Ordem     int
 	Materiais []Material `gorm:"constraint:OnDelete:CASCADE;"`
+	Slug      string     `gorm:"uniqueIndex"`
 }
 
 type Material struct {

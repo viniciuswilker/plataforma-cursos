@@ -178,13 +178,13 @@
                     <span class="material-symbols-outlined">verified</span>
                     Você já está matriculado!
                 </p>
-                <a href="/cursos/{{ .curso.ID }}/assistir" class="btn-enroll"
+                <a href="/cursos/{{ .curso.Slug }}/assistir" class="btn-enroll"
                     style="text-decoration: none; display: block;">
                     Continuar Assistindo
                 </a>
             </div>
             {{ else }}
-            <form action="/api/cursos/{{ .curso.ID }}/matricular" method="POST">
+            <form action="/api/cursos/{{ .curso.Slug }}/matricular" method="POST">
                 <button type="submit" class="btn-enroll">Matricular-se agora</button>
             </form>
             {{ end }}

@@ -16,7 +16,7 @@ func RegistrarRotasAPI(router *gin.Engine) {
 	api := router.Group("/api")
 	api.Use(middlewares.Autorizar("aluno", "instrutor", "admin"))
 	{
-		api.POST("/cursos/:id/matricular", handlers.MatricularAluno)
+		api.POST("/cursos/:slug/matricular", handlers.MatricularAluno)
 
 		api.GET("/cursos", handlers.ListarCursos)
 
