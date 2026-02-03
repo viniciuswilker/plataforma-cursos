@@ -26,6 +26,7 @@ func RegistrarRotasAPI(router *gin.Engine) {
 		professor.Use(middlewares.Autorizar("instrutor", "admin"))
 		{
 			professor.POST("/cursos/criar", handlers.CriarCurso)
+			professor.DELETE("/cursos/:id", handlers.ExcluirCurso)
 
 			professor.POST("/aulas/criar", handlers.CriarAula)
 			professor.DELETE("/aulas/:id", handlers.ExcluirAula)

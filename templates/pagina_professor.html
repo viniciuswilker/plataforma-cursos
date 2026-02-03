@@ -257,6 +257,17 @@
     }
 
 
+    .btn-delete {
+        background-color: #fee2e2 !important;
+        color: #ef4444 !important;
+        border: 1px solid #fecaca !important;
+    }
+
+    .btn-delete:hover {
+        background-color: #ef4444 !important;
+        color: white !important;
+    }
+
     @media (max-width: 768px) {
 
         .page-header h1 {
@@ -300,7 +311,7 @@
 <section class="container courses-grid">
 
     {{ range .cursos }}
-    <div class="course-card">
+    <div class="course-card" id="course-{{ .ID }}">
         <div class="course-thumb"
             style="background-image:url('{{ if .CapaURL }}{{ .CapaURL }}{{ else }}https://images.unsplash.com/photo-1522202176988-66273c2fd55f{{ end }}')">
             <div class="badge">Publicado</div>
@@ -319,6 +330,10 @@
 
             <div class="course-footer">
                 <button onclick="window.location.href='/professor/cursos/editar/{{ .ID }}'">Editar Curso</button>
+            </div>
+
+            <div class="course-footer">
+                <button onclick="deletarCurso('{{ .ID }}', '{{ .Titulo }}')" class="btn-delete">Excluir Curso</button>
             </div>
         </div>
     </div>
@@ -429,6 +444,22 @@
             }
         })
     })
+
+    async function deletarCurso(id, titulo) {
+        if (confirm(`Tem certeza que deseja excluir o curso "${titulo}"?`)) {
+            try {
+                const response = await fetch(`/api/professor/cursos/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    document.getElementById(`course-${id}`).remove();
+                } else {
+                    alert("Erro ao excluir curso.");
+                }
+            } catch (e) {
+                alert("Erro de conexão.");
+            }
+        }
+    }
+
 </script>
 
 

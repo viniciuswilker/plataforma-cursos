@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
 	"github.com/viniciuswilker/plataforma-cursos/internal/repositorios"
 	"github.com/viniciuswilker/plataforma-cursos/internal/services"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -63,6 +65,38 @@ func CriarCurso(c *gin.Context) {
 		"id":      curso.ID,
 		"slug":    curso.Slug,
 	})
+}
+
+func ExcluirCurso(c *gin.Context) {
+	cursoID := c.Param("id")
+	idRaw, _ := c.Get("usuarioID")
+
+	var instrutorID uint
+	switch v := idRaw.(type) {
+	case float64:
+		instrutorID = uint(v)
+	case uint:
+		instrutorID = v
+	}
+
+	var curso models.Curso
+	result := database.DB.Where("id = ? AND instrutor_id = ?", cursoID, instrutorID).First(&curso)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Curso não encontrado"})
+		} else {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Acesso negado"})
+		}
+		return
+	}
+
+	if err := database.DB.Delete(&curso).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao processar exclusão"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Curso movido para a lixeira"})
 }
 
 func ListarCursos(c *gin.Context) {
@@ -283,6 +317,7 @@ func MatricularAluno(c *gin.Context) {
 
 	c.Redirect(http.StatusSeeOther, "/cursos/"+curso.Slug+"/assistir")
 }
+
 func AssistirCurso(c *gin.Context) {
 	cursoSlug := c.Param("slug")
 	idRaw, _ := c.Get("usuarioID")
