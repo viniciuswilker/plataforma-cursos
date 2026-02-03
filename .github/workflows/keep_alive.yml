@@ -1,0 +1,14 @@
+name: Manter Render Ativo
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Realizar requisição ao servidor
+        run: |
+          curl -I -s https://plataforma-cursos-acfy.onrender.com/healthcheck || curl -I -s https://plataforma-cursos-acfy.onrender.com/
