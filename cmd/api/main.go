@@ -1,14 +1,19 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/viniciuswilker/plataforma-cursos/internal/database"
 	"github.com/viniciuswilker/plataforma-cursos/internal/routes"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Erro ao carregar .env")
+	}
 	database.Conectar()
 
 	servidor := gin.Default()

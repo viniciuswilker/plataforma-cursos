@@ -249,7 +249,7 @@
     <main class="vwp-main-zone">
         <div class="vwp-video-box">
             {{ if .aulaAtual.VideoURL }}
-            <video id="vwp-video-element" controls src="/{{ .aulaAtual.VideoURL }}" controlsList="nodownload"></video>
+            <video id="vwp-video-element" controls src="{{ .aulaAtual.VideoURL }}" controlsList="nodownload"></video>
             {{ else }}
             <div
                 style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,0.3);">

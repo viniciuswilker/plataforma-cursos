@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
 	"github.com/viniciuswilker/plataforma-cursos/internal/database"
@@ -169,13 +171,16 @@ func ExcluirModulo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Módulo e aulas removidos com sucesso"})
 }
-
 func CriarAula(c *gin.Context) {
+	fmt.Println("--- Iniciando CriarAula ---")
+
 	idRaw, _ := c.Get("usuarioID")
 	instrutorID := uint(idRaw.(float64))
+	fmt.Printf("[DEBUG] Instrutor ID: %d\n", instrutorID)
 
 	moduloID, _ := strconv.ParseUint(c.PostForm("modulo_id"), 10, 32)
 	titulo := c.PostForm("titulo")
+	fmt.Printf("[DEBUG] Módulo ID: %d | Titulo: %s\n", moduloID, titulo)
 
 	var modulo models.Modulo
 	err := database.DB.Joins("JOIN cursos ON cursos.id = modulos.curso_id").
@@ -183,32 +188,72 @@ func CriarAula(c *gin.Context) {
 		First(&modulo).Error
 
 	if err != nil {
+		fmt.Println("[ERRO] Falha na validação de permissão ou módulo inexistente")
 		c.JSON(http.StatusForbidden, gin.H{"error": "Acesso negado ao módulo"})
 		return
 	}
 
-	videoPath := ""
+	videoURL := ""
 	file, err := c.FormFile("video")
+
 	if err == nil {
-		videoPath = "uploads/videos/" + strconv.FormatInt(time.Now().Unix(), 10) + "_" + file.Filename
-		if err := c.SaveUploadedFile(file, videoPath); err != nil {
-			c.JSON(500, gin.H{"error": "Falha ao salvar vídeo"})
+		fmt.Printf("[DEBUG] Arquivo recebido: %s (%d bytes)\n", file.Filename, file.Size)
+
+		cld, err := cloudinary.NewFromParams(
+			os.Getenv("CLOUDINARY_CLOUD_NAME"),
+			os.Getenv("CLOUDINARY_API_KEY"),
+			os.Getenv("CLOUDINARY_API_SECRET"),
+		)
+		if err != nil {
+			fmt.Println("[ERRO] Falha ao ler variáveis de ambiente do Cloudinary")
+			c.JSON(500, gin.H{"error": "Erro na configuração do storage"})
 			return
 		}
+
+		openedFile, _ := file.Open()
+		if err != nil {
+			fmt.Printf("[ERRO] Falha ao abrir arquivo: %v\n", err)
+			return
+		}
+		defer openedFile.Close()
+
+		fmt.Println("[STORAGE] Iniciando upload para o Cloudinary...")
+		uploadRes, err := cld.Upload.Upload(c.Request.Context(), openedFile, uploader.UploadParams{
+			Folder:       "aulas_plataforma",
+			ResourceType: "video",
+		})
+
+		if uploadRes.SecureURL != "" {
+			videoURL = uploadRes.SecureURL
+		} else {
+			videoURL = uploadRes.URL
+		}
+		fmt.Printf("[DEBUG] URL Retornada: %s\n", videoURL)
+
+		if err != nil {
+			fmt.Printf("[ERRO] Falha no Cloudinary: %v\n", err)
+			c.JSON(500, gin.H{"error": "Falha ao enviar vídeo para nuvem"})
+			return
+		}
+
+		videoURL = uploadRes.SecureURL
+		fmt.Printf("[SUCESSO] Vídeo disponível em: %s\n", videoURL)
 	}
 
 	aula := models.Aula{
 		ModuloID: uint(moduloID),
 		Titulo:   titulo,
 		Slug:     slug.Make(titulo),
-		VideoURL: videoPath,
+		VideoURL: videoURL,
 	}
 
 	if err := database.DB.Create(&aula).Error; err != nil {
-		c.JSON(500, gin.H{"error": "Erro ao salvar aula (slug duplicado?)"})
+		fmt.Printf("[ERRO] Falha ao persistir aula no banco: %v\n", err)
+		c.JSON(500, gin.H{"error": "Erro ao salvar aula"})
 		return
 	}
 
+	fmt.Printf("[FINAL] Aula '%s' criada com sucesso no ID: %d\n", aula.Titulo, aula.ID)
 	c.JSON(http.StatusCreated, aula)
 }
 
