@@ -20,6 +20,8 @@ func RegistrarRotasAPI(router *gin.Engine) {
 
 		api.GET("/cursos", handlers.ListarCursos)
 
+		api.POST("/aulas/:id/concluir", handlers.ConcluirAula)
+
 		professor := api.Group("/professor")
 		professor.Use(middlewares.Autorizar("instrutor", "admin"))
 		{

@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Usuario struct {
 	gorm.Model
@@ -57,8 +61,7 @@ type Matricula struct {
 }
 
 type ProgressoAula struct {
-	gorm.Model
-	UsuarioID uint
-	AulaID    uint
-	Concluido bool `gorm:"default:true"`
+	UsuarioID uint `gorm:"primaryKey"`
+	AulaID    uint `gorm:"primaryKey"`
+	Data      time.Time
 }

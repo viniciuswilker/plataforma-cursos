@@ -213,11 +213,14 @@
                     <p>{{ .curso.Titulo }} • {{ .moduloAtual.Titulo }}</p>
                 </div>
 
-                <button class="vwp-btn-complete {{ if .concluida }}vwp-is-done{{ end }}" id="vwp-mark-btn" {{ if
+                <button id="vwp-mark-btn" class="vwp-btn-complete {{ if .concluida }}vwp-is-done{{ end }}" {{ if
                     .concluida }}disabled{{ end }} onclick="vwpToggleProgress('{{ .aulaAtual.ID }}')">
-                    <span class="material-symbols-outlined">{{ if .concluida }}verified{{ else }}check_circle{{ end
-                        }}</span>
-                    {{ if .concluida }}Concluída{{ else }}Concluir Aula{{ end }}
+                    <span class="material-symbols-outlined">
+                        {{ if .concluida }}verified{{ else }}check_circle{{ end }}
+                    </span>
+                    <span id="vwp-btn-text">
+                        {{ if .concluida }}Aula Concluída{{ else }}Marcar como Concluída{{ end }}
+                    </span>
                 </button>
             </header>
 

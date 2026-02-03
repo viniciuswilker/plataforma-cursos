@@ -12,6 +12,7 @@ import (
 	"github.com/viniciuswilker/plataforma-cursos/internal/models"
 	"github.com/viniciuswilker/plataforma-cursos/internal/repositorios"
 	"github.com/viniciuswilker/plataforma-cursos/internal/services"
+	"gorm.io/gorm/clause"
 )
 
 type RequisicaoCurso struct {
@@ -278,7 +279,7 @@ func AssistirCurso(c *gin.Context) {
 
 	var matricula models.Matricula
 	if err := database.DB.Where("curso_id = ? AND usuario_id = ?", cursoID, usuarioID).First(&matricula).Error; err != nil {
-		c.Redirect(http.StatusSeeOther, "/cursos/"+cursoID+"/")
+		c.Redirect(http.StatusSeeOther, "/preview/curso/"+cursoID)
 		return
 	}
 
@@ -295,13 +296,59 @@ func AssistirCurso(c *gin.Context) {
 		aulaAtual = curso.Modulos[0].Aulas[0]
 	}
 
+	var count int64
+	database.DB.Model(&models.ProgressoAula{}).
+		Where("usuario_id = ? AND aula_id = ?", usuarioID, aulaAtual.ID).
+		Count(&count)
+	concluida := count > 0
+
+	concluidasMap := make(map[uint]bool)
+	var aulasConcluidasIDs []uint
+
+	database.DB.Model(&models.ProgressoAula{}).
+		Where("usuario_id = ?", usuarioID).
+		Pluck("aula_id", &aulasConcluidasIDs)
+
+	for _, id := range aulasConcluidasIDs {
+		concluidasMap[id] = true
+	}
+
 	c.HTML(http.StatusOK, "layout", gin.H{
-		"title":     "Assistindo: " + curso.Titulo,
-		"page":      "ver_curso_aluno",
-		"curso":     curso,
-		"aulaAtual": aulaAtual,
-		"usuario":   usuario,
+		"title":         "Assistindo: " + curso.Titulo,
+		"page":          "ver_curso_aluno",
+		"curso":         curso,
+		"aulaAtual":     aulaAtual,
+		"usuario":       usuario,
+		"concluida":     concluida,
+		"concluidasMap": concluidasMap,
 	})
+}
+
+func ConcluirAula(c *gin.Context) {
+	aulaIDStr := c.Param("id")
+
+	usuarioID, existe := c.Get("usuarioID")
+	if !existe {
+		c.JSON(http.StatusUnauthorized, gin.H{"erro": "Usuário não identificado"})
+		return
+	}
+
+	aulaID, _ := strconv.ParseUint(aulaIDStr, 10, 32)
+
+	progresso := models.ProgressoAula{
+		UsuarioID: uint(usuarioID.(float64)),
+		AulaID:    uint(aulaID),
+		Data:      time.Now(),
+	}
+
+	err := database.DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&progresso).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"erro": "Não foi possível salvar o progresso"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"mensagem": "Aula concluída com sucesso!"})
 }
 
 func parseID(id string) uint {
