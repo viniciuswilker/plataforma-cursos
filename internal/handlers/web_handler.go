@@ -171,6 +171,7 @@ func PublicoExibirDetalhesCurso(c *gin.Context) {
 		"totalAulas": totalAulas,
 	})
 }
+
 func ExibirDetalhesCurso(c *gin.Context) {
 	slugParam := c.Param("slug")
 	var curso models.Curso
@@ -238,6 +239,7 @@ func ExibirDetalhesCurso(c *gin.Context) {
 		"progresso":   porcentagem,
 	})
 }
+
 func ExibirMeusCursos(c *gin.Context) {
 	idRaw, _ := c.Get("usuarioID")
 	var usuarioID uint
